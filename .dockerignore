@@ -1,0 +1,7 @@
+# https://github.com/redhat-developer/redhat-backstage-build/blob/main/.dockerignore
+dist-types
+node_modules
+packages/*/dist
+packages/*/node_modules
+plugins/*/dist
+plugins/*/node_modules

@@ -1,5 +1,30 @@
 # backstage-on-oshft
 
+- [backstage-on-oshft](#backstage-on-oshft)
+  - [Modify app-config.yaml](#modify-app-configyaml)
+  - [Build and Push Image](#build-and-push-image)
+  - [Deploy on OSHFT](#deploy-on-oshft)
+    - [Deploy PostgreSQL](#deploy-postgresql)
+    - [Deploy Backstage](#deploy-backstage)
+---
+## Modify app-config.yaml
+
+1. Log into your target cluster
+   
+2. Run `update-host.sh`:
+
+```
+chmod +x ./update-host.sh
+
+./update-host.sh
+```
+
+Review `app-config.yaml`.
+
+> TODO: configure connection to postgres in `app-config.yaml.template`
+
+
+
 ## Build and Push Image
 
 1. Build the Containerfile:
@@ -12,6 +37,7 @@ podman build -t backstage:1.0.0 .
 >```
 >podman build --platform=linux/amd64 --no-cache --layers=false -t backstage:1.0.1 .
 >```
+> TODO: The above command still does not work reliably
 
 2. Expose the registry: https://docs.openshift.com/container-platform/4.10/registry/securing-exposing-registry.html
 

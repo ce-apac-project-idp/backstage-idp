@@ -45,6 +45,13 @@ podman build -t backstage:1.0.0 .
 podman tag backstage:1.0.0 $HOST/backstage/backstage:1.0.0
 ```
 
+4. Push:
+
+```
+podman push $HOST/backstage/backstage:1.0.0
+```
+
+
 ---
 
 ## Deploy on OSHFT
@@ -79,6 +86,7 @@ chmod +x ./scripts/grant-db-permissions.sh
 
 ./scripts/grant-db-permissions.sh
 ```
+
 ### Deploy Backstage
 
 1. Apply the following secret:

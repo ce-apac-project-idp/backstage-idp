@@ -21,8 +21,6 @@ chmod +x ./update-host.sh
 
 Review `app-config.yaml`.
 
-> TODO: configure connection to postgres in `app-config.yaml.template`
-
 
 
 ## Build and Push Image

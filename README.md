@@ -62,9 +62,9 @@ metadata:
   name: postgresql-secret
   namespace: backstage
 stringData:
-  database-user: backstage
-  database-password: REPLACE_ME
-  database-name: backstage
+  POSTGRESQL_USER: backstage
+  POSTGRESQL_PASSWORD: REPLACE_ME
+  POSTGRESQL_DB: backstage
 ```
 
 Deploy postgres on OSHFT:
@@ -73,6 +73,11 @@ Deploy postgres on OSHFT:
 oc apply -f ./k8s/postgresql
 ```
 
+2. Grant permissions to the backstage user:
+
+```
+./grant-db-permissions.sh
+```
 ### Deploy Backstage
 
 1. Apply the following secret:
@@ -93,3 +98,5 @@ stringData:
 ```
 oc apply -f ./k8s/backstage
 ```
+
+3. Navigate to the `backstage` route in the `backstage` ns to access the application.

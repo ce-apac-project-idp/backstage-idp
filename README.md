@@ -6,6 +6,7 @@
   - [Deploy on OSHFT](#deploy-on-oshft)
     - [Deploy PostgreSQL](#deploy-postgresql)
     - [Deploy Backstage](#deploy-backstage)
+  - [Configuting Github OAUTH](#configuting-github-oauth)
 ---
 ## Modify app-config.yaml
 
@@ -109,3 +110,38 @@ oc apply -f ./k8s/backstage
 ```
 
 3. Navigate to the `backstage` route in the `backstage` ns to access the application.
+
+
+---
+
+## Configuting Github OAUTH
+
+1. Create a Github application following [these instructions](https://backstage.io/docs/auth/github/provider)
+
+
+2. If creating for the GH application for the app deployed on OpenShift, configure the following parameters:
+
+```
+Homepage URL: https://<BACKSTAGE-ROUTE>
+```
+
+```
+Callback URL: https://<BACKSTAGE-ROUTE>/api/auth/github/handler/frame
+```
+
+3. Generate a client secret for the application.
+   
+4. Update the backstage secret:
+
+```
+apiVersion: v1
+kind: Secret
+metadata:
+  name: backstage-secrets
+  namespace: backstage
+type: Opaque
+stringData:
+  GITHUB_TOKEN: REPLACE_ME
+  AUTH_GITHUB_CLIENT_ID: REPLACE_ME
+  AUTH_GITHUB_CLIENT_SECRET: REPLACE_ME
+```

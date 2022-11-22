@@ -14,9 +14,9 @@
 2. Run `update-host.sh`:
 
 ```
-chmod +x ./update-host.sh
+chmod +x ./scripts/update-host.sh
 
-./update-host.sh
+./scripts/update-host.sh
 ```
 
 Review `app-config.yaml`.
@@ -74,7 +74,10 @@ oc apply -f ./k8s/postgresql
 2. Grant permissions to the backstage user:
 
 ```
-./grant-db-permissions.sh
+chmod +x ./scripts/grant-db-permissions.sh
+
+
+./scripts/grant-db-permissions.sh
 ```
 ### Deploy Backstage
 

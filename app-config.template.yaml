@@ -73,6 +73,20 @@ techdocs:
   publisher:
     type: 'local' # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
 
+kubernetes:
+  serviceLocatorMethod:
+    type: 'multiTenant'
+  clusterLocatorMethods:
+    - type: 'config'
+      clusters:
+        - url: https://api.{{OSHFT-BASE-DOMAIN}}:6443
+          name: openshift
+          authProvider: 'serviceAccount'
+          skipTLSVerify: true
+          serviceAccountToken: ${KUBE_TOKEN}
+          dashboardUrl: https://console-openshift-console.apps.{{OSHFT-BASE-DOMAIN}} 
+          dashboardApp: openshift
+
 scaffolder:
   # see https://backstage.io/docs/features/software-templates/configuration for software template options
 

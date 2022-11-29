@@ -9,7 +9,7 @@ BASE_DOMAIN=$(oc get dns cluster -o jsonpath='{.spec.baseDomain}')
 echo "Found base domain: $BASE_DOMAIN"
 
 
-sed "s/{{OSHFT-BASE-DOMAIN}}/$BASE_DOMAIN/g" app-config.yaml.template > app-config.yaml
+sed "s/{{OSHFT-BASE-DOMAIN}}/$BASE_DOMAIN/g" app-config.template.yaml > app-config.yaml
 
 
 echo "Complete!"

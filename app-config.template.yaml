@@ -89,9 +89,18 @@ catalog:
 
     # Local example template
     - type: file
-      target: ../../examples/template/template.yaml
+      target: ../../examples/demo-app/template.yaml
       rules:
         - allow: [Template]
+
+    - type: file
+      target: ../../examples/demo-crs/template.yaml
+      rules:
+        - allow: [Template]
+    - type: file
+      target: ../../examples/template/template.yaml
+      rules:
+        - allow: [Template]       
 
     # Local example organizational data
     - type: file
@@ -100,8 +109,8 @@ catalog:
         - allow: [User, Group]
 
     ## Uncomment these lines to add more example data
-    - type: url
-      target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all.yaml
+    # - type: url
+    #   target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all.yaml
 
     ## Uncomment these lines to add an example org
     # - type: url

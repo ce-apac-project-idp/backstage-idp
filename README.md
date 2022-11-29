@@ -7,6 +7,7 @@
     - [Deploy PostgreSQL](#deploy-postgresql)
     - [Deploy Backstage](#deploy-backstage)
   - [Configuting Github OAUTH](#configuting-github-oauth)
+  - [Kubernetes Authentication with OpenShift](#kubernetes-authentication-with-openshift)
 ---
 ## Modify app-config.yaml
 
@@ -145,3 +146,85 @@ stringData:
   AUTH_GITHUB_CLIENT_ID: REPLACE_ME
   AUTH_GITHUB_CLIENT_SECRET: REPLACE_ME
 ```
+
+---
+
+## Kubernetes Authentication with OpenShift
+
+Running locally:
+
+1. Make sure the following code block is in your app-config.local.yaml:
+
+```
+kubernetes:
+  serviceLocatorMethod:
+    type: 'multiTenant'
+  clusterLocatorMethods:
+    - type: 'config'
+      clusters:
+        - url: https://api.itzroks-666000qmn3-1jtmzt-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud:6443
+          name: openshift
+          authProvider: 'serviceAccount'
+          skipTLSVerify: true
+          serviceAccountToken: ${KUBE_TOKEN}
+          dashboardUrl: https://console-openshift-console.apps.itzroks-666000qmn3-1jtmzt-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud
+          dashboardApp: openshift
+```
+
+2. Fetch the the KUBE_TOKEN secret locally by running:
+
+```
+export KUBE_TOKEN=$(oc get secret backstage-k8s-plugin-token-b2np6 -o=jsonpath='{..token}' | base64 -d)
+```
+
+3. Start the app:
+
+```
+yarn dev
+```
+
+4. Import the following catalog-info.yaml into backstage:
+
+```
+https://github.com/backstage/backstage/blob/master/plugins/kubernetes-backend/examples/dice-roller/catalog-info.yaml
+```
+
+5. Create the following deployment in openshift:
+
+```
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dice-roller
+  labels:
+    'backstage.io/kubernetes-id': dice-roller
+spec:
+  selector:
+    matchLabels:
+      app: dice-roller
+  replicas: 10
+  template:
+    metadata:
+      labels:
+        app: dice-roller
+        'backstage.io/kubernetes-id': dice-roller
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.14.2
+          args:
+            - bash
+            - -c
+            - yes > /dev/null & yes > /dev/null & yes > /dev/null
+          resources:
+            requests:
+              memory: '64Mi'
+              cpu: '50m'
+            limits:
+              memory: '128Mi'
+              cpu: '50m'
+          ports:
+            - containerPort: 80
+```
+
+6. Observe deployed resources in the `Kubernetes` tab of the deployed component

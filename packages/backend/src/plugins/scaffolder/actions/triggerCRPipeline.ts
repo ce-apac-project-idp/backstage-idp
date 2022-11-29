@@ -37,7 +37,7 @@ export const triggerCRPipelineAction = () => {
 
         ctx.logger.info(`Calling build pipeline`)
 
-        const pipelineEndpoint = 'http://el-backstage-cr-test-el-backstage.itzroks-666000qmn3-1jtmzt-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud'
+        const pipelineEndpoint = 'http://el-backstage-cr-el-tekton.itzroks-666000qmn3-1jtmzt-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud'
 
         const data = {
             'applicationName': ctx.input.applicationName,

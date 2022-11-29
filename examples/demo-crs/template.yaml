@@ -3,7 +3,7 @@ apiVersion: scaffolder.backstage.io/v1beta3
 kind: Template
 metadata:
   name: demo-crs
-  title: Deploy Custom Reources from a Repository
+  title: Deploy Custom Resources from a Repository
   description: IBM IDP Demo
 spec:
   owner: user:guest
@@ -17,9 +17,9 @@ spec:
         - repoURL
       properties:
         repoURL:
-          title: Target repo URL
+          title: Target repo SSH Clone URL
           type: string
-          description: The URL of the repo containing your Custom Resources
+          description: The SSH Clone URL of the repo containing your Custom Resources
           ui:autofocus: true
           ui:options:
             rows: 5
@@ -66,5 +66,18 @@ spec:
         developerName:  ${{ parameters.developerName }}
         targetEnv: ${{ parameters.targetEnv }}
         applicationName: ${{ parameters.applicationName }}
+  #   - id: register
+  #     name: Register
+  #     action: catalog:register
+  #     input:
+  #       repoContentsUrl: https://github.com/ce-apac-project-idp/developer-repo/blob/main
+  #       catalogInfoPath: '/catalog-info.yaml'
+  # output:
+  #   links:
+  #     - title: Repository
+  #       url: https://github.com/ce-apac-project-idp/developer-repo
+  #     - title: Open in catalog
+  #       icon: catalog
+  #       entityRef: ${{ steps.register.output.entityRef }}
 
   # Outputs are displayed to the user after a successful execution of the template.

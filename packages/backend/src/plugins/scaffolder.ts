@@ -5,6 +5,7 @@ import type { PluginEnvironment } from '../types';
 import { createBuiltinActions } from '@backstage/plugin-scaffolder-backend';
 import { ScmIntegrations } from '@backstage/integration';
 import { triggerBuildPipelineAction } from './scaffolder/actions/triggerPipeline';
+import { triggerCRPipelineAction } from './scaffolder/actions/triggerCRPipeline'
 
 export default async function createPlugin(
   env: PluginEnvironment,
@@ -21,7 +22,7 @@ export default async function createPlugin(
     reader: env.reader,
   });
 
-  const actions = [...builtInActions, triggerBuildPipelineAction()]
+  const actions = [...builtInActions, triggerBuildPipelineAction(), triggerCRPipelineAction()]
 
   return await createRouter({
     actions,

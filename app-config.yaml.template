@@ -92,6 +92,11 @@ catalog:
       target: ../../examples/template/template.yaml
       rules:
         - allow: [Template]
+        
+    - type: file
+      target: ../../examples/demo-app/template.yaml
+      rules:
+        - allow: [Template]
 
     # Local example organizational data
     - type: file

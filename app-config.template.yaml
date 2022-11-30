@@ -57,6 +57,26 @@ auth:
         clientId: ${AUTH_GITHUB_CLIENT_ID}
         clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
 
+kubernetes:
+  serviceLocatorMethod:
+    type: 'multiTenant'
+  clusterLocatorMethods:
+    - type: 'config'
+      clusters:
+        - url: {{CLUSTER-API-ENDPOINT}}
+          name: openshift
+          authProvider: 'serviceAccount'
+          skipTLSVerify: true
+          serviceAccountToken: ${KUBE_TOKEN}
+          dashboardUrl: https://console-openshift-console.{{OSHFT-BASE-DOMAIN}} 
+          dashboardApp: openshift
+
+tekton:
+  - baseUrl: {{CLUSTER-API-ENDPOINT}}
+    authorizationBearerToken: ${KUBE_TOKEN}
+    dashboardBaseUrl: https://tekton-dashboard-openshift-pipelines.{{OSHFT-BASE-DOMAIN}} 
+
+
 proxy:
   '/test':
     target: 'https://example.com'

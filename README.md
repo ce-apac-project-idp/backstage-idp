@@ -1,24 +1,56 @@
 # backstage-on-oshft
 
 - [backstage-on-oshft](#backstage-on-oshft)
+- [Run Locally](#run-locally)
+- [Deploy on OpenShift](#deploy-on-openshift)
   - [Modify app-config.yaml](#modify-app-configyaml)
   - [Build and Push Image](#build-and-push-image)
   - [Deploy on OSHFT](#deploy-on-oshft)
     - [Deploy PostgreSQL](#deploy-postgresql)
+    - [Deploying Plugin Resources](#deploying-plugin-resources)
+      - [Kubernetes Plugin](#kubernetes-plugin)
+      - [Tekton Pipelines Plugin](#tekton-pipelines-plugin)
+    - [Configuting Github OAUTH](#configuting-github-oauth)
     - [Deploy Backstage](#deploy-backstage)
-  - [Configuting Github OAUTH](#configuting-github-oauth)
-  - [Kubernetes Authentication with OpenShift](#kubernetes-authentication-with-openshift)
 ---
+
+# Run Locally
+
+1. To run Backstage locally, you will need a `app-config.local.yaml` file in the root directory of this repo. Reach out to one of the IdP team members if you need more information / a copy of it. 
+
+2. Make sure you have `node 18` installed on your machine. Then run:
+
+```
+yarn install
+```
+> N.B. run the command at root directory level
+
+
+3. To start the application, run:
+
+```
+yarn dev
+```
+
+4. Head to the following url to access the Backstage front end:
+   
+```
+http://localhost:3000
+```
+
+---
+
+# Deploy on OpenShift
 ## Modify app-config.yaml
 
 1. Log into your target cluster
    
-2. Run `update-host.sh`:
+2. Run `update-app-config.sh`:
 
 ```
 chmod +x ./scripts/update-host.sh
 
-./scripts/update-host.sh
+./scripts/update-app-config.sh
 ```
 
 Review `app-config.yaml`.
@@ -52,8 +84,6 @@ podman tag backstage:1.0.0 $HOST/backstage/backstage:1.0.0
 ```
 podman push $HOST/backstage/backstage:1.0.0
 ```
-
-
 ---
 
 ## Deploy on OSHFT
@@ -89,33 +119,41 @@ chmod +x ./scripts/grant-db-permissions.sh
 ./scripts/grant-db-permissions.sh
 ```
 
-### Deploy Backstage
+### Deploying Plugin Resources
 
-1. Apply the following secret:
+#### Kubernetes Plugin
 
-```
-apiVersion: v1
-kind: Secret
-metadata:
-  name: backstage-secrets
-  namespace: backstage
-type: Opaque
-stringData:
-  GITHUB_TOKEN: REPLACE_ME
-```
+The Kubernetes plugin requires authentication to the Kubernetes API to fetch resource information. [See here](https://backstage.io/docs/features/kubernetes/authentication).
 
-2. Deploy backstage:
+A relatively straight forward option to configure authentication is to deploy a Service Account for the plugin and give it visibility to all pipelines across the cluster.
+
+> **TODO:** Currently the Service Account has Cluster Admin permissions. RBAC should be refined to only Tekton APIs & resources.
+
+1. Deploy the Service Account Resources:
 
 ```
-oc apply -f ./k8s/backstage
+oc apply -f ./k8s/k8s-plugin-resources
 ```
 
-3. Navigate to the `backstage` route in the `backstage` ns to access the application.
+2. Fetch the Service Account Token:
 
+```
+oc get secret $(oc get secrets -n backstage | grep backstage-k8s-plugin-token | head -n 1 | awk '{print $1}') -ojsonpath='{..token}' | base64 -d
+```
 
+> You will be able to use this token in the `app-config.yaml` or `app-config.local.yaml` file to authenticate both the Kubernetes and the Tekton Pipelines plugin (this is `${KUBE_TOKEN}` in `app-config.template.yaml`).
+
+#### Tekton Pipelines Plugin
+
+The Tekton Pipelines Plugin requires the Tekton Dashboard to be deployed in order to it in the Backstage Pipeline UI view. You can [find more info on the Tekton Dashboard here](https://tekton.dev/docs/dashboard/)
+
+1. To deploy the Tekton Dashboard in the `openshift-pipelines` namespace:
+
+```
+oc apply -f ./k8s/tekton-dashboard
+```
 ---
-
-## Configuting Github OAUTH
+### Configuting Github OAUTH
 
 1. Create a Github application following [these instructions](https://backstage.io/docs/auth/github/provider)
 
@@ -132,7 +170,7 @@ Callback URL: https://<BACKSTAGE-ROUTE>/api/auth/github/handler/frame
 
 3. Generate a client secret for the application.
    
-4. Update the backstage secret:
+4. Place the Github Client ID and Github Client secret in the backstage secret:
 
 ```
 apiVersion: v1
@@ -145,86 +183,41 @@ stringData:
   GITHUB_TOKEN: REPLACE_ME
   AUTH_GITHUB_CLIENT_ID: REPLACE_ME
   AUTH_GITHUB_CLIENT_SECRET: REPLACE_ME
+  KUBE_TOKEN: REPLACE_ME
 ```
+### Deploy Backstage
+
+1. Apply the following secret:
+
+```
+apiVersion: v1
+kind: Secret
+metadata:
+  name: backstage-secrets
+  namespace: backstage
+type: Opaque
+stringData:
+  GITHUB_TOKEN: REPLACE_ME
+  AUTH_GITHUB_CLIENT_ID: REPLACE_ME
+  AUTH_GITHUB_CLIENT_SECRET: REPLACE_ME
+  KUBE_TOKEN: REPLACE_ME
+```
+
+> `GITHUB_TOKEN`: a personal access token to access the application.
+> 
+> `AUTH_GITHUB_CLIENT_ID`: the Github Client ID for Github OAUTH.
+> [Follow these steps to create it](#configuting-github-oauth)
+> 
+> `AUTH_GITHUB_CLIENT_SECRET`: the Github Client Secret for Github OAUTH. [Follow these steps to create it](#configuting-github-oauth)
+> 
+> `KUBE_TOKEN`: the Service Account token for the Backstage Kuberenetes Plugin. [See how to configure it here](#kubernetes-plugin)
+
+2. Deploy backstage:
+
+```
+oc apply -f ./k8s/backstage
+```
+
+3. Navigate to the `backstage` route in the `backstage` project to access the application.
 
 ---
-
-## Kubernetes Authentication with OpenShift
-
-Running locally:
-
-1. Make sure the following code block is in your app-config.local.yaml:
-
-```
-kubernetes:
-  serviceLocatorMethod:
-    type: 'multiTenant'
-  clusterLocatorMethods:
-    - type: 'config'
-      clusters:
-        - url: https://api.itzroks-666000qmn3-1jtmzt-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud:6443
-          name: openshift
-          authProvider: 'serviceAccount'
-          skipTLSVerify: true
-          serviceAccountToken: ${KUBE_TOKEN}
-          dashboardUrl: https://console-openshift-console.apps.itzroks-666000qmn3-1jtmzt-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud
-          dashboardApp: openshift
-```
-
-2. Fetch the the KUBE_TOKEN secret locally by running:
-
-```
-export KUBE_TOKEN=$(oc get secret backstage-k8s-plugin-token-b2np6 -o=jsonpath='{..token}' | base64 -d)
-```
-
-3. Start the app:
-
-```
-yarn dev
-```
-
-4. Import the following catalog-info.yaml into backstage:
-
-```
-https://github.com/backstage/backstage/blob/master/plugins/kubernetes-backend/examples/dice-roller/catalog-info.yaml
-```
-
-5. Create the following deployment in openshift:
-
-```
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: dice-roller
-  labels:
-    'backstage.io/kubernetes-id': dice-roller
-spec:
-  selector:
-    matchLabels:
-      app: dice-roller
-  replicas: 10
-  template:
-    metadata:
-      labels:
-        app: dice-roller
-        'backstage.io/kubernetes-id': dice-roller
-    spec:
-      containers:
-        - name: nginx
-          image: nginx:1.14.2
-          args:
-            - bash
-            - -c
-            - yes > /dev/null & yes > /dev/null & yes > /dev/null
-          resources:
-            requests:
-              memory: '64Mi'
-              cpu: '50m'
-            limits:
-              memory: '128Mi'
-              cpu: '50m'
-          ports:
-            - containerPort: 80
-```
-
-6. Observe deployed resources in the `Kubernetes` tab of the deployed component

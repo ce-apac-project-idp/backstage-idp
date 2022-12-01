@@ -57,6 +57,25 @@ auth:
         clientId: ${AUTH_GITHUB_CLIENT_ID}
         clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
 
+kubernetes:
+  serviceLocatorMethod:
+    type: 'multiTenant'
+  clusterLocatorMethods:
+    - type: 'config'
+      clusters:
+        - url: {{CLUSTER-API-ENDPOINT}}
+          name: openshift
+          authProvider: 'serviceAccount'
+          skipTLSVerify: true
+          serviceAccountToken: ${KUBE_TOKEN}
+          dashboardUrl: https://console-openshift-console.{{OSHFT-BASE-DOMAIN}} 
+          dashboardApp: openshift
+
+tekton:
+  - baseUrl: {{CLUSTER-API-ENDPOINT}}
+    authorizationBearerToken: ${KUBE_TOKEN}
+    dashboardBaseUrl: https://tekton-dashboard-openshift-pipelines.{{OSHFT-BASE-DOMAIN}} 
+
 proxy:
   '/test':
     target: 'https://example.com'
@@ -72,20 +91,6 @@ techdocs:
     runIn: 'docker' # Alternatives - 'local'
   publisher:
     type: 'local' # Alternatives - 'googleGcs' or 'awsS3'. Read documentation for using alternatives.
-
-kubernetes:
-  serviceLocatorMethod:
-    type: 'multiTenant'
-  clusterLocatorMethods:
-    - type: 'config'
-      clusters:
-        - url: https://api.{{OSHFT-BASE-DOMAIN}}:6443
-          name: openshift
-          authProvider: 'serviceAccount'
-          skipTLSVerify: true
-          serviceAccountToken: ${KUBE_TOKEN}
-          dashboardUrl: https://console-openshift-console.apps.{{OSHFT-BASE-DOMAIN}} 
-          dashboardApp: openshift
 
 scaffolder:
   # see https://backstage.io/docs/features/software-templates/configuration for software template options

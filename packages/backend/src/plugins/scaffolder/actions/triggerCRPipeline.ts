@@ -1,5 +1,6 @@
 import { createTemplateAction } from '@backstage/plugin-scaffolder-backend';
 import { assertError } from '@backstage/errors';
+import axios from 'axios';
 
 export const triggerCRPipelineAction = () => {
   return createTemplateAction<{ repoURL: string; developerName: string; targetEnv: 'AWS' | 'Azure'; applicationName: string }>({
@@ -47,18 +48,11 @@ export const triggerCRPipelineAction = () => {
         };
 
         try {
-            await fetch(pipelineEndpoint, {
-                method: 'POST',
-                mode: 'no-cors',
-                cache: 'no-cache',
-                credentials: 'same-origin',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                redirect: 'follow',
-                body: JSON.stringify(data)
-    
-            })
+
+          await axios.post(
+            pipelineEndpoint, 
+            JSON.stringify(data)
+            )
 
             ctx.logger.info(`Pipeline build started successfully`)
         } catch (e) {

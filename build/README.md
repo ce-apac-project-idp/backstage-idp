@@ -18,3 +18,8 @@ kustomize edit set namespace <target-ns>
 kustomize build | oc apply -f -
 ```
 
+5. Webhook endpoint:
+   
+```
+https://<openshift_api_host:port>/apis/build.openshift.io/v1/namespaces/<namespace>/buildconfigs/<name>/webhooks/<secret>/github
+```

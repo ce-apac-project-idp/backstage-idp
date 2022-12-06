@@ -54,7 +54,7 @@ RUN tar xzf skeleton.tar.gz && rm skeleton.tar.gz
 RUN npm install -g yarn && \
     yarn install --frozen-lockfile --production --network-timeout 600000 && rm -rf "$(yarn cache dir)"
 
-# Copy the built packages from the build stage
+# Copy the bㅐuilt packages from the build stage
 COPY --from=build /opt/app-root/src/packages/backend/dist/bundle.tar.gz .
 RUN tar xzf bundle.tar.gz && rm bundle.tar.gz
 

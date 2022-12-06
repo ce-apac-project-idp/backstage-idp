@@ -22,7 +22,7 @@ import {
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 import { UserSettingsPage } from '@backstage/plugin-user-settings';
-import { apis } from './apis';
+import { apis, ibmOIDCAuthApiRef } from './apis';
 import { entityPage } from './components/catalog/EntityPage';
 import { searchPage } from './components/search/SearchPage';
 import { Root } from './components/Root';
@@ -33,7 +33,6 @@ import { FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
-import { githubAuthApiRef } from '@backstage/core-plugin-api';
 import { SignInPage } from '@backstage/core-components';
 
 const app = createApp({
@@ -42,12 +41,12 @@ const app = createApp({
         SignInPage: props => (
           <SignInPage
             {...props}
-          auto
+            auto
             provider={{
-             id: 'github-auth-provider',
-             title: 'GitHub',
-            message: 'Sign in using GitHub',
-             apiRef: githubAuthApiRef,
+              id: 'ibm-verify-oidc-provider',
+              title: 'IBM Security Verify',
+              message: 'Sign in using IBM Security Verify',
+              apiRef: ibmOIDCAuthApiRef,
            }}
          />
       ),

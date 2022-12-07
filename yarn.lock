@@ -3167,10 +3167,10 @@
     "@types/yargs" "^17.0.8"
     chalk "^4.0.0"
 
-"@jquad-group/plugin-tekton-pipelines-backend@0.2.4":
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/@jquad-group/plugin-tekton-pipelines-backend/-/plugin-tekton-pipelines-backend-0.2.4.tgz#f2cc8b8f4474795c3623dd12f4d511a709d34d31"
-  integrity sha512-vRDF5u+AcxjNmBh+hTj/O0e5PamYs4zCfNNpIDhEb2534A1Xwh4J14CWHTD4qUMKXT5KdhINkpes82EeDK/VHA==
+"@jquad-group/plugin-tekton-pipelines-backend@0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@jquad-group/plugin-tekton-pipelines-backend/-/plugin-tekton-pipelines-backend-0.2.5.tgz#c43b82a6d5e2f0080d51ba4d6c0651e03145aea2"
+  integrity sha512-BtPfxH6SWZ12pLRvdg/yU0Q/drW0JnVAGnLlWlhiSlneNFFhfzVwxiuFyTg9Dnd/v/n+1hm68G9VXcxLpShOaA==
   dependencies:
     "@backstage/backend-common" "^0.15.2"
     "@backstage/config" "^1.0.3"
@@ -3181,10 +3181,10 @@
     winston "^3.2.1"
     yn "^4.0.0"
 
-"@jquad-group/plugin-tekton-pipelines@0.2.4":
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/@jquad-group/plugin-tekton-pipelines/-/plugin-tekton-pipelines-0.2.4.tgz#535b2b86044a3a1d7db48e106b4f5ae5f1b55473"
-  integrity sha512-3pmvk6RLuE2utZd/p0RdQOPNqcxJ89+3iDn+dOWsQh6GMPJuupTUakQYppcrbcVbVjxUUUsteA+1c4MH4gkUdw==
+"@jquad-group/plugin-tekton-pipelines@0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@jquad-group/plugin-tekton-pipelines/-/plugin-tekton-pipelines-0.2.5.tgz#0c45ae042985ed638b8bc5324b5a362e58c7ac24"
+  integrity sha512-mhQbI3y6xYCZv+WtN8Gs+2YLbLk28PHlsaj4Hp/qj2BM3oqN5hwVTmjZjbytdLztFb2nLZi3dIWSRCol6p97GQ==
   dependencies:
     "@backstage/catalog-model" "^1.1.2"
     "@backstage/core-components" "^0.11.2"
@@ -5660,7 +5660,7 @@
   resolved "https://registry.yarnpkg.com/@types/range-parser/-/range-parser-1.2.4.tgz#cd667bcfdd025213aafb7ca5915a932590acdcdc"
   integrity sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==
 
-"@types/react-dom@*", "@types/react-dom@<18.0.0", "@types/react-dom@^17":
+"@types/react-dom@*", "@types/react-dom@<18.0.0":
   version "17.0.18"
   resolved "https://registry.yarnpkg.com/@types/react-dom/-/react-dom-17.0.18.tgz#8f7af38f5d9b42f79162eea7492e5a1caff70dc2"
   integrity sha512-rLVtIfbwyur2iFKykP2w0pl/1unw26b5td16d5xMgp7/yjTHomkyxPYChFoCr/FtEX1lN9wY6lFj1qvKdS5kDw==
@@ -6415,7 +6415,7 @@ anymatch@^3.0.3, anymatch@~3.1.2:
     "@backstage/plugin-techdocs-react" "^1.0.6"
     "@backstage/plugin-user-settings" "^0.5.1"
     "@backstage/theme" "^0.2.16"
-    "@jquad-group/plugin-tekton-pipelines" "0.2.4"
+    "@jquad-group/plugin-tekton-pipelines" "0.2.5"
     "@material-ui/core" "^4.12.2"
     "@material-ui/icons" "^4.9.1"
     history "^5.0.0"

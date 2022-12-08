@@ -64,7 +64,7 @@ kubernetes:
     - type: 'config'
       clusters:
         - url: {{CLUSTER-API-ENDPOINT}}
-          name: openshift
+          name: local-cluster
           authProvider: 'serviceAccount'
           skipTLSVerify: true
           serviceAccountToken: ${KUBE_TOKEN}
@@ -132,6 +132,11 @@ catalog:
 
     - type: file
       target: ../../examples/resources/test.yaml
+      rules:
+        - allow: [ Resource ]
+
+    - type: file
+      target: ../../examples/resources/test-managed.yaml
       rules:
         - allow: [ Resource ]
 

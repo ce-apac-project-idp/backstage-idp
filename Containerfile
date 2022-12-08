@@ -7,8 +7,6 @@ COPY package.json yarn.lock ./
 
 COPY packages packages
 
-USER 0
-
 RUN chgrp -R 0 /opt/app-root/src && \
     chmod -R g=u /opt/app-root/src
 
@@ -28,7 +26,6 @@ RUN fix-permissions ./ && \
 
 COPY . .
 
-USER 0
 
 RUN chgrp -R 0 /opt/app-root/src && \
     chmod -R g=u /opt/app-root/src
@@ -40,8 +37,6 @@ RUN yarn --cwd packages/backend build
 
 # Stage 3 - Build the actual backend image and install production dependencies
 FROM registry.access.redhat.com/ubi9/nodejs-16-minimal:latest
-
-USER 0
 
 RUN microdnf install -y gzip && microdnf clean all
 

@@ -33,7 +33,9 @@ import { FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
+
 import { SignInPage } from '@backstage/core-components';
+import { RhacmPage } from '@internal/backstage-plugin-rhacm';
 
 const app = createApp({
   apis,
@@ -109,6 +111,7 @@ const routes = (
     </Route>
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
+    <Route path="/rhacm" element={<RhacmPage />} />
   </FlatRoutes>
 );
 

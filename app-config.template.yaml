@@ -1,5 +1,5 @@
 app:
-  title: IBM idp Testing
+  title: IBM Internal Developer Platform
   baseUrl: https://backstage-backstage.{{OSHFT-BASE-DOMAIN}} 
 
 organization:
@@ -71,6 +71,9 @@ kubernetes:
           dashboardUrl: https://console-openshift-console.{{OSHFT-BASE-DOMAIN}} 
           dashboardApp: openshift
 
+rhacm:
+  hub: 'local-cluster'
+
 tekton:
   - baseUrl: {{CLUSTER-API-ENDPOINT}}
     authorizationBearerToken: ${KUBE_TOKEN}
@@ -126,6 +129,11 @@ catalog:
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
+
+    - type: file
+      target: ../../examples/resources/test.yaml
+      rules:
+        - allow: [ Resource ]
 
     ## Uncomment these lines to add more example data
     # - type: url

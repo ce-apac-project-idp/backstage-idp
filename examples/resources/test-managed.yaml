@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: rods-managed-cluster
+  title: rods-managed-cluster
+  description: rods-managed-cluster
+spec:
+  type: kubernetes-cluster
+  lifecycle: experimental
+  owner: group:ce-apac

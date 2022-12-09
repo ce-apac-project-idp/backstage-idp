@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: backstage-dev
+resources:
+- ./base/app-config.yaml
+- ./base/buildconfig.yaml
+- ./base/image-stream.yaml
+- ./base/source-secret.yaml

@@ -4,17 +4,17 @@ import {
   ScmAuth,
 } from '@backstage/integration-react';
 import {
-  AnyApiFactory,
   configApiRef,
+  discoveryApiRef,
+  oauthRequestApiRef,
   createApiFactory,
-  ApiRef,
   createApiRef,
+  ApiRef,
+  AnyApiFactory,
   OpenIdConnectApi,
   ProfileInfoApi,
   BackstageIdentityApi,
   SessionApi,
-  discoveryApiRef,
-  oauthRequestApiRef,
 } from '@backstage/core-plugin-api';
 import { OAuth2 } from '@backstage/core-app-api'
 
@@ -30,7 +30,6 @@ export const ibmOIDCAuthApiRef: ApiRef<
   id: 'auth.ibm-verify-oidc-provider',
 });
 
-// @ts-ignore
 export const apis: AnyApiFactory[] = [
   createApiFactory({
     api: scmIntegrationsApiRef,

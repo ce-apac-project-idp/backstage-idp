@@ -10,9 +10,5 @@
   "compilerOptions": {
     "outDir": "dist-types",
     "rootDir": ".",
-    "module": "commonjs"
-  },
-  "ts-node": {
-    "esm": true
   }
 }

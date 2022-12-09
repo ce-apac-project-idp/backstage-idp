@@ -1,0 +1,8 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: app-config
+  namespace: backstage
+data:
+  app-config.yaml: >-
+    {{ TODO: replace with yourapp-config.yaml }}

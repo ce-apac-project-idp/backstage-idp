@@ -28,11 +28,12 @@ import scaffolder from './plugins/scaffolder';
 import proxy from './plugins/proxy';
 import techdocs from './plugins/techdocs';
 import search from './plugins/search';
+import rhacm from './plugins/rhacm';
+import kubernetes from './plugins/kubernetes';
+import tekton from './plugins/tekton-pipelines';
 import { PluginEnvironment } from './types';
 import { ServerPermissionClient } from '@backstage/plugin-permission-node';
 import { DefaultIdentityClient } from '@backstage/plugin-auth-node';
-import kubernetes from './plugins/kubernetes';
-import tekton from './plugins/tekton-pipelines';
 
 
 function makeCreateEnv(config: Config) {
@@ -90,6 +91,7 @@ async function main() {
   const appEnv = useHotMemoize(module, () => createEnv('app'));
   const kubernetesEnv = useHotMemoize(module, () => createEnv('kubernetes'));
   const tektonEnv = useHotMemoize(module, () => createEnv('tekton'))
+  const rhacmEnv = useHotMemoize(module, () => createEnv('rhacm'))
 
   const apiRouter = Router();
   apiRouter.use('/catalog', await catalog(catalogEnv));
@@ -100,6 +102,7 @@ async function main() {
   apiRouter.use('/search', await search(searchEnv));
   apiRouter.use('/kubernetes', await kubernetes(kubernetesEnv));
   apiRouter.use('/tekton-pipelines', await tekton(tektonEnv) );
+  apiRouter.use('/rhacm', await rhacm(rhacmEnv));
 
   // Add backends ABOVE this line; this 404 handler is the catch-all fallback
   apiRouter.use(notFoundHandler());

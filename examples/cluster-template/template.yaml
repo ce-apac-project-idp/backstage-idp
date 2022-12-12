@@ -1,0 +1,64 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+# https://backstage.io/docs/features/software-catalog/descriptor-format#kind-template
+kind: Template
+metadata:
+  name: cluster-template
+  title: Deploy a Kubernetes Cluster
+  description: Deploy a Kubernetes Cluster using the IBM OTP Pattern
+spec:
+  owner: user:guest
+  type: service
+
+  # These parameters are used to generate the input form in the frontend, and are
+  # used to gather input data for the execution of the template.
+  parameters:
+    - title: Choose a Target Cloud Environment
+      required:
+        - targetEnv
+      properties:
+        targetEnv:
+          title: Target Cloud Environment
+          type: string
+          enum: ["AWS", "Azure", "GCP", "IBM Cloud"]
+    - title: Choose a Location
+      required:
+        - location
+      properties:
+        location:
+          title: Cluster Location
+          type: string
+          enum: ["Suprise Me!", "apac", "north-america", "south-america", "emea"]
+    - title: Choose a Cluster Size
+      required:
+        - size
+      properties:
+        size:
+          title: Cluster Size
+          type: string
+          enum: ["small", "medium", "large"]
+    - title: Name your Cluster
+      required:
+        - name
+      properties:
+        name:
+          title: Cluster Name
+          type: string
+          description: Unique name of your deployment
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+      
+  # These steps are executed in the scaffolder backend, using data that we gathered
+  # via the parameters above.
+  steps:
+    # Each step executes an action, in this case one templates files into the working directory.
+
+    # The final step is to register our new component in the catalog.
+    - id: trigger_build
+      name: Trigger Build Pipeline
+      action: ibm:call-build-pipeline
+      input:
+        targetEnv:  "AWS"
+        deploymentName:  ${{ parameters.name }}
+
+  # Outputs are displayed to the user after a successful execution of the template.

@@ -16,15 +16,15 @@
 
 # Run Locally
 
-1. To run Backstage locally, you will need a `app-config.local.yaml` file in the root directory of this repo. Reach out to one of the IdP team members if you need more information / a copy of it. 
-
+1. To run Backstage locally, you will need, 
+ - `app-config.local.yaml`: Config file in the root directory of this repo. Reach out to one of the IDP team members if you need more information / a copy of it.
+ - `.env`: Environment variables you will be using in app-config(local).yaml. Rename `.env.template` to make your `.env`
 2. Make sure you have `node 18` installed on your machine. Then run:
 
 ```
 yarn install
 ```
 > N.B. run the command at root directory level
-
 
 3. To start the application, run:
 
@@ -210,6 +210,10 @@ auth:
         clientSecret: ${AUTH_IBM_VERIFY_CLIENT_SECRET}
         prompt: auto
 ```
+
+> In case you want to turn off sign-in for local development, 
+> comment out `SignInPage` attribute of `createApp({component: {})` in `packages > app > src > App.tsx`
+
 
 ---
 ### Configuring RHACM plugins

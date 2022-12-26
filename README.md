@@ -16,15 +16,15 @@
 
 # Run Locally
 
-1. To run Backstage locally, you will need a `app-config.local.yaml` file in the root directory of this repo. Reach out to one of the IdP team members if you need more information / a copy of it. 
-
+1. To run Backstage locally, you will need, 
+ - `app-config.local.yaml`: Config file in the root directory of this repo. Reach out to one of the IDP team members if you need more information / a copy of it.
+ - `.env`: Environment variables you will be using in app-config(local).yaml. Rename `.env.template` to make your `.env`
 2. Make sure you have `node 18` installed on your machine. Then run:
 
 ```
 yarn install
 ```
 > N.B. run the command at root directory level
-
 
 3. To start the application, run:
 
@@ -185,6 +185,65 @@ stringData:
   AUTH_GITHUB_CLIENT_SECRET: REPLACE_ME
   KUBE_TOKEN: REPLACE_ME
 ```
+
+### Configuring IBM Security Verify OIDC
+1. Login to IBM Security Verify as admin
+2. Create an application
+   - Refer to this [doc](https://docs.verify.ibm.com/verify/docs/connect-a-sample-application)
+   - Create a custom application
+   - Sign-on > Sign-on Method: Open ID Connect 1.0
+   - Sign-on > Application URL: your backstage url
+   - Sign-on > Redirect URIs: your backstage oauth redirect url. 
+     - in this implementation, use `<backstage url>/api/auth/ibm-verify-oidc-provider/handler/frame`
+3. Save the application setting and get `Client Id` and `Clinet Secret`. 
+4. Copy your verify endpoint (`metadataUrl`) at Sign-on > Config Doc on right side > Configure your OpenID Connect relying party > Provide the IBM Security Verify endpoint by using the following format 
+4. Update your app-config.yaml
+```
+auth:
+  session:
+    secret: ${AUTH_SESSION_SECRET}
+  providers:
+    ibm-verify-oidc-provider:
+      development:
+        metadataUrl: ${AUTH_IBM_VERIFY_META_URL}
+        clientId: ${AUTH_IBM_VERIFY_CLIENT_ID}
+        clientSecret: ${AUTH_IBM_VERIFY_CLIENT_SECRET}
+        prompt: auto
+```
+
+> In case you want to turn off sign-in for local development, 
+> comment out `SignInPage` attribute of `createApp({component: {})` in `packages > app > src > App.tsx`
+
+
+---
+### Configuring RHACM plugins
+1. Update your app-config.yaml
+```
+kubernetes:
+  clusterLocatorMethods:
+    - type: 'config'
+      clusters:
+        - name: local-cluster // matching name
+rhacm:
+  hub: 'local-cluster' // matching name
+  
+catalog:
+  locations:
+  - type: file
+    target: /opt/app-root/src/examples/resources/test.yaml
+    rules:
+    - allow: [ Resource ]
+  - type: file
+    target: /opt/app-root/src/examples/resources/test-managed.yaml
+    rules:
+    - allow: [ Resource ]
+```
+
+2. Add your cluster as Resource - static at this moment
+   - Refer to examples > resources
+
+---
+
 ### Deploy Backstage
 
 1. Apply the following secret:

@@ -17,12 +17,6 @@ spec:
         kind: ImageStreamTag
         namespace: openshift
         name: 'nodejs:18'
-      env:
-        - name: TEST_SECRET_USERNAME_ENV_VAR
-          valueFrom:
-            secretKeyRef:
-              name: test-secret
-              key: username
   source:
     type: Git
     git:

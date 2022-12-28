@@ -47,7 +47,8 @@ export POSTGRESQL_PASSWORD="\${POSTGRESQL_PASSWORD}"
 set +x
 
 envsubst < app-config.yaml > app-config.prod.yaml
-# backend build config could not be specified
+# backend build config cannot be specified
+# ensure the right config at build time
 rm app-config.local.yaml
 cp app-config.prod.yaml app-config.yaml
 pwd && ls -al

@@ -2,14 +2,14 @@
 # Array will be replaced, Object will be deeply merged.
 app:
   title: IBM IDP Local Env
-  baseUrl: http://localhost:3000
+  baseUrl: http://127.0.0.1:3000
 
 backend:
-  baseUrl: http://localhost:7007
+  baseUrl: http://127.0.0.1:7007
   listen:
     port: 7007
   cors:
-    origin: http://localhost:3000
+    origin: http://127.0.0.1:3000
     methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
     credentials: true
   csp:

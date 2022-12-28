@@ -24,14 +24,20 @@ mv /tmp/src/* ./
 fix-permissions ./
 
 echo "---> Generating app-config.prod.yaml"
-pwd
-ls -al
 if [[ ! -f ".env" ]]; then
   echo "Failed: .env not found. Please add .env as configmap to BuildConfig"
   exit 1
 fi
+
+command -v envsubst > /dev/null
+if [[ $? != 0 ]]; then
+  echo "Failed: envsubst required. Please use RHEL base image for builder image. e.g) rhel8/nodejs"
+  exit 1
+fi
+
 export $(grep -v '^#' .env | xargs)
 envsubst < app-config.yaml > app-config.prod.yaml
+pwd && ls -al
 
 
 echo "---> Building in production mode"

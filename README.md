@@ -45,9 +45,8 @@
     >podman build --platform=linux/amd64 --no-cache --layers=false -t backstage:1.0.1 .
     >```
     > TODO: The above command still does not work reliably
-
-2. Expose the registry: https://docs.openshift.com/container-platform/4.10/registry/securing-exposing-registry.html
-3. Push the image
+   
+2. Push the image
    ```
    chmod +x ./srcripts/container-push.sh
    ./srcripts/container-push.sh

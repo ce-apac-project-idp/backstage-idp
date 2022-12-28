@@ -1,0 +1,102 @@
+# Backstage override configuration for your local development environment
+# Array will be replaced, Object will be deeply merged.
+app:
+  title: IBM IDP Local Env
+  baseUrl: http://localhost:3000
+
+backend:
+  baseUrl: http://localhost:7007
+  listen:
+    port: 7007
+  cors:
+    origin: http://localhost:3000
+    methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+    credentials: true
+  csp:
+    connect-src: [ "'self'", 'http:', 'https:' ]
+  database:
+    client: better-sqlite3
+    connection: ':memory:'
+  cache:
+    store: memory
+
+integrations:
+  github:
+    - host: github.com
+      token: ${GITHUB_TOKEN}
+
+auth:
+  environment: development
+  session:
+    secret: ${AUTH_SESSION_SECRET}
+  providers:
+    ibm-verify-oidc-provider:
+      development:
+        metadataUrl: ${AUTH_IBM_VERIFY_META_URL}
+        clientId: ${AUTH_IBM_VERIFY_CLIENT_ID}
+        clientSecret: ${AUTH_IBM_VERIFY_CLIENT_SECRET}
+        prompt: auto
+    github:
+      development:
+        clientId: ${AUTH_GITHUB_CLIENT_ID}
+        clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
+
+kubernetes:
+  serviceLocatorMethod:
+    type: 'multiTenant'
+  clusterLocatorMethods:
+    - type: 'config'
+      clusters:
+        - url: ${KUBE_API_ENDPOINT}
+          name: ${KUBE_CLUSTER_NAME}
+          authProvider: 'serviceAccount'
+          skipTLSVerify: true
+          serviceAccountToken: ${KUBE_SERVICE_ACCOUNT_TOKEN}
+          dashboardUrl: https://console-openshift-console.${OPENSHIFT_BASE_DOMAIN}
+          dashboardApp: openshift
+  customResources:
+    - group: 'apac.catalyst.project.idp'
+      apiVersion: 'v1alpha1'
+      plural: 'postgresql'
+    - group: 'route.openshift.io'
+      apiVersion: 'v1'
+      plural: 'routes'
+    - group: 'cluster.open-cluster-management.io'
+      apiVersion: 'v1'
+      plural: 'managedclusters'
+
+rhacm:
+  hub: ${RHACM_HUB_CLUSTER}
+
+tekton:
+  - baseUrl: ${KUBE_API_ENDPOINT}
+    authorizationBearerToken: ${KUBE_SERVICE_ACCOUNT_TOKEN}
+    dashboardBaseUrl: https://tekton-dashboard-openshift-pipelines.${OPENSHIFT_BASE_DOMAIN}
+
+catalog:
+  import:
+    entityFilename: catalog-info.yaml
+    pullRequestBranchName: backstage-integration
+  rules:
+    - allow:
+        - API
+        - Component
+        - Domain
+        - Location
+        - Resource
+        - System
+  locations:
+    - type: file
+      target: ../../examples/entities.yaml
+    - type: file
+      target: ../../examples/org.yaml
+      rules:
+        - allow: [ User, Group ]
+    - type: file
+      target: ../../examples/template/template.yaml
+      rules:
+        - allow: [Template]
+    - type: url
+      target: https://github.com/ce-apac-project-idp/developer-repo-catalog/blob/main/all.yaml
+      rules:
+        - allow: [Group, Template, User]

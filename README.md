@@ -14,76 +14,45 @@
     - [Deploy Backstage](#deploy-backstage)
 ---
 
-# Run Locally
+## Run Locally
 
-1. To run Backstage locally, you will need, 
- - `app-config.local.yaml`: Config file in the root directory of this repo. Reach out to one of the IDP team members if you need more information / a copy of it.
- - `.env`: Environment variables you will be using in app-config(local).yaml. Rename `.env.template` to make your `.env`
-2. Make sure you have `node 18` installed on your machine. Then run:
-
-```
-yarn install
-```
-> N.B. run the command at root directory level
-
-3. To start the application, run:
-
-```
-yarn dev
-```
-
-4. Head to the following url to access the Backstage front end:
-   
-```
-http://localhost:3000
-```
-
+1. Make your `.env` from `.env.template`. These environment variables will be used in `app-config(local).yaml`
+2. Install dependencies
+    ```
+    cd <project root dir>
+    yarn install
+    ```
+3. Start application
+    ```
+    yarn dev
+    ```
+4. Head to the Backstage front end
+    ```
+    http://localhost:3000
+    ```
 ---
 
-# Deploy on OpenShift
-## Modify app-config.yaml
+## Deploy on OpenShift
+### Build and Push Image
 
-1. Log into your target cluster
-   
-2. Run `update-app-config.sh`:
-
-```
-chmod +x ./scripts/update-host.sh
-
-./scripts/update-app-config.sh
-```
-
-Review `app-config.yaml`.
-
-
-
-## Build and Push Image
-
-1. Build the Containerfile:
-
-```
-podman build -t backstage:1.0.0 .
-```
-
-> N.B. If getting yarn errors/building on M1 mac:
->```
->podman build --platform=linux/amd64 --no-cache --layers=false -t backstage:1.0.1 .
->```
-> TODO: The above command still does not work reliably
+1. Build the Containerfile
+    ```
+    chmod +x ./srcripts/container-build.sh
+    ./srcripts/container-build.sh
+    ```
+    > N.B. If getting yarn errors/building on M1 mac:
+    >```
+    >podman build --platform=linux/amd64 --no-cache --layers=false -t backstage:1.0.1 .
+    >```
+    > TODO: The above command still does not work reliably
 
 2. Expose the registry: https://docs.openshift.com/container-platform/4.10/registry/securing-exposing-registry.html
+3. Push the image
+   ```
+   chmod +x ./srcripts/container-push.sh
+   ./srcripts/container-push.sh
+   ```
 
-3. Tag the image:
-
-```
-podman tag backstage:1.0.0 $HOST/backstage/backstage:1.0.0
-```
-
-4. Push:
-
-```
-podman push $HOST/backstage/backstage:1.0.0
-```
 ---
 
 ## Deploy on OSHFT
@@ -229,18 +198,13 @@ rhacm:
   
 catalog:
   locations:
-  - type: file
-    target: /opt/app-root/src/examples/resources/test.yaml
-    rules:
-    - allow: [ Resource ]
-  - type: file
-    target: /opt/app-root/src/examples/resources/test-managed.yaml
+  - type: url
+    target: https://github.com/ce-apac-project-idp/developer-repo-catalog/blob/main/all-resources.yaml
     rules:
     - allow: [ Resource ]
 ```
 
-2. Add your cluster as Resource - static at this moment
-   - Refer to examples > resources
+2. Add your cluster as Resource in the catalog repository
 
 ---
 

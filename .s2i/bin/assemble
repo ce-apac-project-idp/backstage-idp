@@ -1,5 +1,11 @@
-# https://github.com/janus-idp/redhat-backstage-build/blob/main/.s2i/bin/assemble
 #!/bin/bash
+
+##
+## Based on Janus IDP's source-to-image
+## https://github.com/janus-idp/redhat-backstage-build/blob/main/.s2i/bin/assemble
+## With generation of app-config.prod.yaml
+##
+
 echo "---> Adding yarn to the image"
 npm install -g yarn
 
@@ -16,6 +22,18 @@ mv /tmp/src/* ./
 
 # Fix source directory permissions
 fix-permissions ./
+
+echo "---> Generating app-config.prod.yaml"
+pwd
+ls -al
+if [[ ! -f ".env" ]]; then
+  echo "Failed: .env not found. Please add .env as configmap to BuildConfig"
+  exit 1
+fi
+export $(grep -v '^#' .env | xargs)
+envsubst < app-config.yaml > app-config.prod.yaml
+
+
 echo "---> Building in production mode"
 yarn install --frozen-lockfile --network-timeout 300000
 yarn tsc

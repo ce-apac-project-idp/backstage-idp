@@ -33,24 +33,26 @@
 ---
 
 ## Deploy on OpenShift
-### Build and Push Image
+There are two ways to build and push the backstage application
+### Option 1. Build with Containerfile
+Build the Containerfile and push to the image registry
 
-1. Build the Containerfile
-    ```
-    chmod +x ./srcripts/container-build.sh
-    ./srcripts/container-build.sh
-    ```
-    > N.B. If getting yarn errors/building on M1 mac:
-    >```
-    >podman build --platform=linux/amd64 --no-cache --layers=false -t backstage:1.0.1 .
-    >```
-    > TODO: The above command still does not work reliably
-   
-2. Push the image
-   ```
-   chmod +x ./srcripts/container-push.sh
-   ./srcripts/container-push.sh
-   ```
+```
+chmod +x ./srcripts/*.sh
+./srcripts/container-push.sh
+./srcripts/container-build.sh
+```
+> N.B. The scrips are tested with docker on RHEL8
+> 
+> N.B. If getting yarn errors/building on M1 mac:
+>```
+>podman build --platform=linux/amd64 --no-cache --layers=false -t backstage:1.0.1 .
+>```
+> TODO: The above command still does not work reliably
+
+### Option 2. Build with Source-to-image
+Go check `BuildConfig` at Openshift Console > Builds > BuildConfigs > Backstage
+This will be triggered automatically when there is update on the repository.
 
 ---
 

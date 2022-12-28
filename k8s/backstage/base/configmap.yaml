@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backstage-config
+  namespace: backstage-dev
+  annotations:
+    test: "true"
+    todo: "make sensitive envs to secret"
+data:
+  .env: |
+    BACKSTAGE_SUB_DOMAIN=backstage-backstage-dev
+    OPENSHIFT_BASE_DOMAIN=itzroks-666000qmn3-1jtmzt-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud
+
+    POSTGRESQL_SERVICE_HOST=localhost
+    POSTGRESQL_SERVICE_PORT=5432
+    POSTGRESQL_USER=backstage
+    POSTGRESQL_PASSWORD=hunter
+
+    AUTH_SESSION_SECRET=devsessionsecret
+    AUTH_IBM_VERIFY_META_URL=https://ryu.verify.ibm.com/oidc/endpoint/default/.well-known/openid-configuration
+    AUTH_IBM_VERIFY_CLIENT_ID=b594335f-1164-47b2-b5cf-599e95ab3955
+    AUTH_IBM_VERIFY_CLIENT_SECRET=97jmLndjH0
+
+    GITHUB_TOKEN=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
+
+    KUBE_API_ENDPOINT=https://c100-e.au-syd.containers.cloud.ibm.com:3168
+    KUBE_CLUSTER_NAME=local-cluster
+    KUBE_SERVICE_ACCOUNT_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6ImQ3WG15YnItM183cnl4b0RHRmZZZ0FFOGhxRHpDc01KZUY5OUw2X0pjQmsifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJiYWNrc3RhZ2UiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlY3JldC5uYW1lIjoiYmFja3N0YWdlLWs4cy1wbHVnaW4tdG9rZW4ta3Y0YzgiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiYmFja3N0YWdlLWs4cy1wbHVnaW4iLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiIyNTc2ZDZlMi0zOWYwLTRiYTEtOWU0MC0yNjAyYzJmN2Q1MzMiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6YmFja3N0YWdlOmJhY2tzdGFnZS1rOHMtcGx1Z2luIn0.aBi8C1tK7yMiYj3NKfry6FfoK7BoKD7KeL2DZJ_0QbzTQPgaxq1kxSirza1O8whARi4fZT3oeS5pATUn6vZh2VIs1F7sxskJc52BcWK8FFn6vDUBJvQs39e3PGvbaPfVQkAmQQs0S8dVTOoVuao8ThTK9M3SLCyQI8zxfU1z07-njuo54zWW5i86NKy1NFD4d107R-65VweBaF1pU3Ry4UCqzgY-rvysPJrgfcJOxYHokXFiUM36dnV-Fqc4vxmAImy8qatrIyFw9foVcMrUb6AhMw22_puawFeE-_oEOEL4MDeNa2ZvFzLPjIrYT4ifTDycat_E1INFbFaCUsxyQA
+    RHACM_HUB_CLUSTER=local-cluster

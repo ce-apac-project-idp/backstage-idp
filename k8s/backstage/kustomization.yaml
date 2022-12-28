@@ -4,3 +4,6 @@ resources:
 - ./base/deployment.yaml
 - ./base/route.yaml
 - ./base/service.yaml
+- ./base/configmap.yaml
+- ./base/buildconfig.yaml
+

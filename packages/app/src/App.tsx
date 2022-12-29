@@ -34,11 +34,13 @@ import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
 
+import { badgesPlugin } from '@backstage/plugin-badges'
 import { SignInPage } from '@backstage/core-components';
 import { RhacmPage } from '@internal/backstage-plugin-rhacm';
 
 const app = createApp({
   apis,
+  plugins: [badgesPlugin],
   components: {
         SignInPage: props => (
           <SignInPage

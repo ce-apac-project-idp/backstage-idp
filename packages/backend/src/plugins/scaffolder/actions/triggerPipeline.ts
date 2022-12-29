@@ -12,7 +12,7 @@ export const triggerBuildPipelineAction = () => {
         properties: {
           targetEnv: {
             type: 'string',
-            enum: ['AWS', 'Azure'],
+            enum: ['AWS', 'Azure', 'GCP', 'IBM Cloud',],
             title: 'Target Environment',
             description: 'The Cloud Environment to Deploy in',
           },

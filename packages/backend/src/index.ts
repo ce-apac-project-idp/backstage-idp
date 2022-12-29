@@ -35,6 +35,8 @@ import { PluginEnvironment } from './types';
 import { ServerPermissionClient } from '@backstage/plugin-permission-node';
 import { DefaultIdentityClient } from '@backstage/plugin-auth-node';
 
+console.log(process.env.KUBE_API_ENDPOINT)
+console.log(process.env.KUBE_SERVICE_ACCOUNT_TOKEN)
 
 function makeCreateEnv(config: Config) {
   const root = getRootLogger();

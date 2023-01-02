@@ -46,6 +46,9 @@ export const triggerCRPipelineAction = () => {
             'developerName': ctx.input.developerName
         };
 
+        console.log("ACtions atarted")
+        console.log(data)
+
         try {
 
           await axios.post(

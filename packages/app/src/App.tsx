@@ -37,6 +37,8 @@ import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/
 import { badgesPlugin } from '@backstage/plugin-badges'
 import { SignInPage } from '@backstage/core-components';
 import { RhacmPage } from '@internal/backstage-plugin-rhacm';
+import { RhacsPage } from '@internal/backstage-plugin-rhacs';
+import { TestPage } from '@internal/plugin-test';
 
 const app = createApp({
   apis,
@@ -114,6 +116,8 @@ const routes = (
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
     <Route path="/rhacm" element={<RhacmPage />} />
+    <Route path="/rhacs" element={<RhacsPage />} />
+    <Route path="/test" element={<TestPage />} />
   </FlatRoutes>
 );
 

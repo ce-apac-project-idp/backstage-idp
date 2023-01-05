@@ -9,7 +9,7 @@ spec:
   output:
     to:
       kind: ImageStreamTag
-      name: 'backstage:ryu'
+      name: 'backstage:latest'
   strategy:
     type: Source
     sourceStrategy:

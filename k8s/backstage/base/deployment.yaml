@@ -22,7 +22,7 @@ spec:
           imagePullPolicy: IfNotPresent
           envFrom:
             - configMapRef:
-                name: backstage-cm
+                name: backstage-config
             - secretRef:
                 name: postgresql-secrets
           image: image-registry.openshift-image-registry.svc:5000/backstage-dev/backstage:latest

@@ -35,14 +35,11 @@ if [[ $? != 0 ]]; then
   exit 1
 fi
 
-# expose all envvars from confimap
-cat app-config.yaml | envsubst "$(grep -v '^#' .env | xargs)" > app-config.prod.yaml
 
-# backend build config cannot be specified
-# ensure the right config at build time
+# Backstage needs production 'app-config.yaml' and any required envvar at build time
+# we use .env file (backstage-config configmap) to load envvars while using app-config.yaml with envvars in it
 rm app-config.local.yaml
-cp app-config.prod.yaml app-config.yaml
-pwd && ls -al
+export $(grep -v '^#' .env | xargs)
 
 echo "---> Building in production mode"
 yarn install --frozen-lockfile --network-timeout 300000

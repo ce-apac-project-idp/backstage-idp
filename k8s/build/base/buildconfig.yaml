@@ -2,7 +2,7 @@ kind: BuildConfig
 apiVersion: build.openshift.io/v1
 metadata:
   name: backstage-build
-  namespace: backstage-dev
+  namespace: backstage
   annotations:
     todo: "change image tag and buildconfig name"
 spec:
@@ -23,7 +23,7 @@ spec:
       uri: 'git@github.com:ce-apac-project-idp/backstage-idp.git'
       ref: dev
     sourceSecret:
-      name: build-source-secret
+      name: buildconfig-webhook-secret
     configMaps:
       - configMap:
           name: backstage-config

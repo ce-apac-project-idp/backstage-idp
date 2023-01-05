@@ -27,9 +27,6 @@ RUN fix-permissions ./ && \
     yarn install --frozen-lockfile --network-timeout 600000 && rm -rf "$(yarn cache dir)"
 
 COPY . .
-RUN rm app-config.local.yaml
-RUN cp app-config.prod.yaml app-config.yaml
-RUN pwd && ls -al
 
 USER 0
 
@@ -38,8 +35,10 @@ RUN chgrp -R 0 /opt/app-root/src && \
 
 USER 1001
 
-RUN yarn tsc
-RUN yarn --cwd packages/backend build
+# Backstage needs production 'app-config.yaml' and any required envvar at build time
+# we use .env file (backstage-config configmap) to load envvars while using app-config.yaml with envvars in it
+RUN rm -f app-config.local.yaml
+RUN export $(grep -v '^#' .env | xargs) && yarn tsc && yarn --cwd packages/backend build
 
 # Stage 3 - Build the actual backend image and install production dependencies
 FROM registry.access.redhat.com/ubi9/nodejs-18-minimal:latest
@@ -62,8 +61,8 @@ COPY --from=build /opt/app-root/src/packages/backend/dist/bundle.tar.gz .
 RUN tar xzf bundle.tar.gz && rm bundle.tar.gz
 
 # Copy any other files that we need at runtime
-COPY app-config.prod.yaml ./
+COPY app-config.yaml ./
 
 RUN fix-permissions ./
 
-CMD ["node", "packages/backend", "--config", "app-config.prod.yaml"]
+CMD ["node", "packages/backend", "--config", "app-config.yaml"]

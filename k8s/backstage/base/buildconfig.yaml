@@ -2,7 +2,6 @@ kind: BuildConfig
 apiVersion: build.openshift.io/v1
 metadata:
   name: backstage-build
-  namespace: backstage-dev
   annotations:
     todo: "change image tag and buildconfig name"
 spec:

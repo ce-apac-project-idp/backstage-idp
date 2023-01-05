@@ -2,7 +2,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: postgresql
-  namespace: backstage
+  namespace: backstage-dev
 spec:
   accessModes:
     - ReadWriteOnce

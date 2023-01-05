@@ -1,10 +1,10 @@
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
-  name: backstage-k8s-plugin-rb-cluster-admin
+  name: backstage-sa-admin
 subjects:
   - kind: ServiceAccount
-    name: backstage-k8s-plugin
+    name: backstage
     namespace: backstage
 roleRef:
   apiGroup: rbac.authorization.k8s.io

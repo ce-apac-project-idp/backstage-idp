@@ -1,26 +1,19 @@
-apiVersion: v1
 kind: ConfigMap
+apiVersion: v1
 metadata:
-  name: backstage-config
-  namespace: backstage-dev
-  annotations:
-    test: "true"
-    todo: "make sensitive envs to secret"
+  name: backstage-cm
+  namespace: backstage
 data:
-  .env: |
-    BACKSTAGE_SUB_DOMAIN=backstage-backstage-dev
-    OPENSHIFT_BASE_DOMAIN=itzroks-666000qmn3-1jtmzt-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud
-
-    AUTH_SESSION_SECRET=devsessionsecret
-    AUTH_IBM_VERIFY_META_URL=https://ryu.verify.ibm.com/oidc/endpoint/default/.well-known/openid-configuration
-    AUTH_IBM_VERIFY_CLIENT_ID=b594335f-1164-47b2-b5cf-599e95ab3955
-    AUTH_IBM_VERIFY_CLIENT_SECRET=97jmLndjH0
-    AUTH_GITHUB_CLIENT_ID=Iv1.a86906fa3a97f414
-    AUTH_GITHUB_CLIENT_SECRET=2ab23f7db4be66133d8093d73aaf3880753e041c
-  
-    GITHUB_TOKEN=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
-
-    KUBE_API_ENDPOINT=https://c100-e.au-syd.containers.cloud.ibm.com:31685
-    KUBE_CLUSTER_NAME=local-cluster
-    KUBE_SERVICE_ACCOUNT_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6ImQ3WG15YnItM183cnl4b0RHRmZZZ0FFOGhxRHpDc01KZUY5OUw2X0pjQmsifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJiYWNrc3RhZ2UiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlY3JldC5uYW1lIjoiYmFja3N0YWdlLWs4cy1wbHVnaW4tdG9rZW4tbXpidmwiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiYmFja3N0YWdlLWs4cy1wbHVnaW4iLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiIyNTc2ZDZlMi0zOWYwLTRiYTEtOWU0MC0yNjAyYzJmN2Q1MzMiLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6YmFja3N0YWdlOmJhY2tzdGFnZS1rOHMtcGx1Z2luIn0.neo7zXUpjo3Rgz2q-Sg7duGYATZ4z4BxYm5XnD9s42zYp1Bx9KFnS8invn4rzQ__-mb-MAW_0aW7nOprPxOthCqXcrSCDMYo7WnKBuYE8mtgACo2rSbPePzMddI48_SpL7xPUYXS7en7UjR97eU3tb-Gd3Onijr68xndIVHRGu78mouU0A3pp3fu5UU_Egn6LFQ63H-SkfQ7p7qpXDbQIsHDqDqNQ4VpQarpcj-hC6nNYk6FTpzltCjCZlkNklth6AZ31qQQ315_iKJOll84QCvv_pWLgWudcBP3nSZR2XbFYm9TYoMhgQKAzIDX1AQmuyiGoRqV_7Uf3QS0Vg0Ykg
-    RHACM_HUB_CLUSTER=local-cluster
+  BACKSTAGE_SUB_DOMAIN: backstage-backstage
+  OPENSHIFT_BASE_DOMAIN: itzroks-671000wmfn-8vdu9o-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud
+  AUTH_SESSION_SECRET: devsessionsecret
+  AUTH_IBM_VERIFY_META_URL: https://ryu.verify.ibm.com/oidc/endpoint/default/.well-known/openid-configuration
+  AUTH_IBM_VERIFY_CLIENT_ID: 39662a44-8e00-4292-88a6-e9952c6fdbe4
+  AUTH_IBM_VERIFY_CLIENT_SECRET: v4sbSAAtGC
+  KUBE_API_ENDPOINT: https://c100-e.au-syd.containers.cloud.ibm.com:30783
+  KUBE_CLUSTER_NAME: local-cluster
+  KUBE_SERVICE_ACCOUNT_TOKEN: eyJhbGciOiJSUzI1NiIsImtpZCI6IkoyelNPN3NaOEppRjg2dEpHMmVzem1iU1hRNFdVUDlxZU40UWJzczV1LWMifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJiYWNrc3RhZ2UiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlY3JldC5uYW1lIjoiYmFja3N0YWdlLXRva2VuLWs0cXd2Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImJhY2tzdGFnZSIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6IjI0YTI0ZmIwLTBkNTAtNGVhZC1hNTViLTQ3YzVhMzQzZTA1ZSIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpiYWNrc3RhZ2U6YmFja3N0YWdlIn0.KohGLWGMaTCWQvvYMUK9VTUSWvdB-ySL7Xf4VErPTq_m_kw2vZq02X3CCl7ZP4ibyu87rCAihvLmQPWyNxrtY_ctQN78FBYi-AwaM1mrxgWhvKe45LXrTpvoMQL2GqSIiid0vO-o_cBDhhdZ9C7i1uH-6HUxoEAUDua5xmUN0v7UK290pt7vi7GpTukjunOyhgJsbpKgr0LOHqBB5iw6xLAJ_yBJ19yVALOFF15t4E-vgTWbBzdpu5LHWVf71CWfXVnuSlexLHWXhdFDuwckzfKT1lmQ747Lap_Mbnu9uHxt0zSXZHn-mHBv2zP8qp3u6xyr1my6rsyzEjRzAs-2Bg
+  RHACM_HUB_CLUSTER: local-cluster
+  # GITHUB_TOKEN
+  # AUTH_GITHUB_CLIENT_ID
+  # AUTH_GITHUB_CLIENT_SECRET

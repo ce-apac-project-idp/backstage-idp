@@ -1,4 +1,6 @@
-import React from 'react';
+// @ts-nocheck
+
+import React, {createContext, useContext, useEffect, useState} from 'react';
 import {
   Button,
   ItemCardHeader,
@@ -12,10 +14,12 @@ import {
   Card,
   CardActions, makeStyles,
 } from '@material-ui/core';
+import useAsyncFn from 'react-use/lib/useAsyncFn';
+import useDebounce from 'react-use/lib/useDebounce';
 
+import { getViolationSummary } from "../../helpers/requests";
 
-const centralEndpoint = "https://central-rhacs-operator.itzroks-666000qmn3-1jtmzt-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud"
-const summaryPath = "/v1/alerts/summary/counts"
+import { configApiRef, useApi} from "@backstage/core-plugin-api";
 
 const response = {
   "groups": [
@@ -43,7 +47,7 @@ const response = {
   ]
 }
 
-const useStyles = makeStyles({
+const styles = {
   low_severity: {
     color: 'black',
     backgroundImage: 'linear-gradient(to bottom right, grey, white)'
@@ -60,28 +64,54 @@ const useStyles = makeStyles({
     color: 'black',
     backgroundImage: 'linear-gradient(to bottom right, red, pink)'
   }
-});
+};
+
+const centralEndpoint='https://central-rhacs-operator.itzroks-671000wmfn-8vdu9o-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud'
+
+const useStyles = makeStyles(styles);
 
 export const ViolationCountCards = () => {
+  const configApi = useApi(configApiRef);
   const classes = useStyles();
 
-  // TODO: fetch
-  const data = response.groups[0].counts
+  const [summary, setSummary] = useState<>([]);
 
-  if (!data) {
-    return null;
+  const [{ loading, error }, refresh] = useAsyncFn(
+    async() => {
+      const response = await getViolationSummary(configApi);
+      // const data = response.groups[0].counts
+
+      // if (!data) {
+      //   return null;
+      // }
+
+      console.log(response)
+      setSummary(response.data.groups[0].counts)
+    }
+  );
+
+  useDebounce(refresh, 10);
+
+  if (error) {
+    console.log(error)
   }
+
+  //
+  // useEffect(() => {
+  //   const res = getViolationSummary(configApi)
+  //   console.log(res)
+  // })
 
   return (
     <Grid>
       <Typography variant="h3"> Policy Violations by Severity </Typography>
       <ItemCardGrid>
-        {data.map((value, index) => (
+        {summary.map((value, index) => (
           <Card key={index}>
             <CardMedia>
               <ItemCardHeader
                 title={value.severity.split('_')[0]}
-                classes={{ root: classes[value.severity.toLowerCase()]
+                classes={{ root: classes[ value.severity.toLowerCase() as keyof typeof styles ]
               }}
               />
             </CardMedia>

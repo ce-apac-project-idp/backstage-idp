@@ -38,23 +38,24 @@ import { badgesPlugin } from '@backstage/plugin-badges'
 import { SignInPage } from '@backstage/core-components';
 import { RhacmPage } from '@internal/backstage-plugin-rhacm';
 import { RhacsPage } from '@internal/backstage-plugin-rhacs';
-import { TestPage } from '@internal/plugin-test';
 
 const app = createApp({
   apis,
   plugins: [badgesPlugin],
   components: {
         SignInPage: props => (
-          <SignInPage
-            {...props}
-            auto
-            provider={{
-              id: 'ibm-verify-oidc-provider',
-              title: 'IBM Security Verify',
-              message: 'Sign in using IBM Security Verify',
-              apiRef: ibmOIDCAuthApiRef,
-           }}
-         />
+          process.env.NODE_ENV === 'dev' ?
+            null :
+            <SignInPage
+              {...props}
+              auto
+              provider={{
+                id: 'ibm-verify-oidc-provider',
+                title: 'IBM Security Verify',
+                message: 'Sign in using IBM Security Verify',
+                apiRef: ibmOIDCAuthApiRef,
+             }}
+           />
       ),
      },
   bindRoutes({ bind }) {
@@ -117,7 +118,6 @@ const routes = (
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
     <Route path="/rhacm" element={<RhacmPage />} />
     <Route path="/rhacs" element={<RhacsPage />} />
-    <Route path="/test" element={<TestPage />} />
   </FlatRoutes>
 );
 

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { useState } from 'react';
 import { SearchContextProvider } from '@backstage/plugin-search-react';
 import {
@@ -10,9 +12,12 @@ import {
 
 import { ViolationCountCards } from "./ViolationCountCards"
 import { QuickLinksCards } from "./QuickLinksCards"
+import { configApiRef, useApi} from "@backstage/core-plugin-api";
+
+export const ClusterStatusPage = () => {
+  const configApi = useApi(configApiRef);
 
 
-export const ClusterStatusPage = ({ logo }: { logo?: React.ReactNode }) => {
   const [selectedTab, setSelectedTab] = useState<number>(2);
 
   return (

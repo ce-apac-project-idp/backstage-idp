@@ -27,6 +27,9 @@ RUN fix-permissions ./ && \
     yarn install --frozen-lockfile --network-timeout 600000 && rm -rf "$(yarn cache dir)"
 
 COPY . .
+RUN rm app-config.local.yaml
+RUN cp app-config.prod.yaml app-config.yaml
+RUN pwd && ls -al
 
 USER 0
 

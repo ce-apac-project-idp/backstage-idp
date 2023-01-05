@@ -11,9 +11,9 @@ import {
   Card,
 } from '@material-ui/core';
 
-const centralEndpoint = "https://central-rhacs-operator.itzroks-666000qmn3-1jtmzt-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud"
+const centralEndpoint='https://central-rhacs-operator.itzroks-671000wmfn-8vdu9o-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud'
 
-export const QuickLinksCards = ({ logo }: { logo?: React.ReactNode }) => {
+export const QuickLinksCards = () => {
   return (
     <Grid>
       <p />

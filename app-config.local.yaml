@@ -20,6 +20,11 @@ backend:
   cache:
     store: memory
 
+#proxy:
+#  '/rhacs':
+#    target: https://central-rhacs-operator.itzroks-671000wmfn-8vdu9o-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud
+#    changeOrigin: true
+
 integrations:
   github:
     - host: github.com

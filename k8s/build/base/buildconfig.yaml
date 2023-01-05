@@ -23,7 +23,7 @@ spec:
       uri: 'git@github.com:ce-apac-project-idp/backstage-idp.git'
       ref: dev
     sourceSecret:
-      name: buildconfig-webhook-secret
+      name: buildconfig-source-secret
     configMaps:
       - configMap:
           name: backstage-config

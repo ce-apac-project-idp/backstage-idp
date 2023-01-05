@@ -2,7 +2,6 @@ kind: Service
 apiVersion: v1
 metadata:
   name: backstage
-  namespace: backstage
 spec:
   ports:
     - name: backstage

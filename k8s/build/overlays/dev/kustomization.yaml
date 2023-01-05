@@ -4,7 +4,7 @@ kind: Kustomization
 bases:
   - ../../base
 
-namespace: backstage-dev
-
 patches:
-  - ./deployment-patches.yaml
+  - ./webhook-secret-patchs.yaml
+
+namespace: backstage-dev

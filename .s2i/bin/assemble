@@ -37,9 +37,10 @@ fi
 
 
 # Backstage needs production 'app-config.yaml' and any required envvar at build time
-# we use .env file (backstage-config configmap) to load envvars while using app-config.yaml with envvars in it
 rm app-config.local.yaml
-export $(grep -v '^#' .env | xargs)
+(export $(grep -v '^#' .env | xargs); envsubst < app-config.yaml > app-config.prod.yaml)
+mv app-config.prod.yaml app-config.yaml
+cat app-config.yaml
 
 echo "---> Building in production mode"
 yarn install --frozen-lockfile --network-timeout 300000

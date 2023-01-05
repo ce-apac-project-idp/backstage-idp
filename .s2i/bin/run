@@ -1,7 +1,5 @@
 #!/bin/bash
 
 set -e
-echo "--> Running app with production configuration with envvars"
-# export $(grep -v '^#' .env | xargs)
-# node packages/backend --config app-config.yaml
-while true; do sleep 30; done;
+echo "--> Running app with production configuration"
+node packages/backend --config app-config.yaml

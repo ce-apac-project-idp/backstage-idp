@@ -23,16 +23,8 @@ backend:
   csp:
     connect-src: ["'self'", 'http:', 'https:']
   database:
-    client: pg
-    connection:
-      host:
-        $env: POSTGRESQL_SERVICE_HOST
-      port:
-        $env: POSTGRESQL_SERVICE_PORT
-      user:
-        $env: POSTGRESQL_USER
-      password:
-        $env: POSTGRESQL_PASSWORD
+    client: better-sqlite3
+    connection: ':memory:'
   cache:
     store: memory
   # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir

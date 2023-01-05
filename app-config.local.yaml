@@ -35,16 +35,16 @@ auth:
   session:
     secret: ${AUTH_SESSION_SECRET}
   providers:
+    github:
+      development:
+        clientId: ${AUTH_GITHUB_CLIENT_ID}
+        clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
     ibm-verify-oidc-provider:
       development:
         metadataUrl: ${AUTH_IBM_VERIFY_META_URL}
         clientId: ${AUTH_IBM_VERIFY_CLIENT_ID}
         clientSecret: ${AUTH_IBM_VERIFY_CLIENT_SECRET}
         prompt: auto
-    github:
-      development:
-        clientId: ${AUTH_GITHUB_CLIENT_ID}
-        clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
 
 kubernetes:
   serviceLocatorMethod:

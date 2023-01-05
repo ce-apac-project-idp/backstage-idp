@@ -36,17 +36,8 @@ if [[ $? != 0 ]]; then
 fi
 
 # expose all envvars from confimap
-export $(grep -v '^#' .env | xargs)
+cat app-config.yaml | envsubst "$(grep -v '^#' .env | xargs)" > app-config.prod.yaml
 
-# trick not to convert envvars in secrets
-set -x
-export POSTGRESQL_SERVICE_HOST="\${POSTGRESQL_SERVICE_HOST}"
-export POSTGRESQL_SERVICE_PORT="\${POSTGRESQL_SERVICE_PORT}"
-export POSTGRESQL_USER="\${POSTGRESQL_USER}"
-export POSTGRESQL_PASSWORD="\${POSTGRESQL_PASSWORD}"
-set +x
-
-envsubst < app-config.yaml > app-config.prod.yaml
 # backend build config cannot be specified
 # ensure the right config at build time
 rm app-config.local.yaml

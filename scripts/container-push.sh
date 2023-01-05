@@ -20,13 +20,18 @@ setup() {
   if [[ -n $1 ]]; then
     IMAGE=$1
   fi
+
+  # Set namespace
+  if [[ -n $1 ]]; then
+    NAMESPACE=$2
+  fi
 }
 
 tag() {
   # Expose the registry
   # See: https://docs.openshift.com/container-platform/4.10/registry/securing-exposing-registry.html
   HOST=$(oc get route default-route -n openshift-image-registry --template='{{ .spec.host }}')
-  REMOTE_IMAGE="$HOST/backstage/$IMAGE"
+  REMOTE_IMAGE="$HOST/$NAMESPACE/$IMAGE"
   eval "$CONTAINER_MANAGER tag $IMAGE $REMOTE_IMAGE"
 }
 
@@ -43,7 +48,8 @@ cd "$WORKDIR"
 
 CONTAINER_MANAGER=podman
 IMAGE=backstage:latest
+NAMESPACE=backstage
 
-setup $1
+setup $1 $2
 tag
 login_and_push

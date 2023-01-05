@@ -32,8 +32,7 @@ setup() {
 }
 
 generate_app_config() {
-  export $(grep -v '^#' .env | xargs)
-  envsubst < app-config.yaml > app-config.prod.yaml
+  cat app-config.yaml | envsubst "$(grep -v '^#' .env | xargs)" > app-config.prod.yaml
   echo "> app-config.prod.yaml generated"
 }
 

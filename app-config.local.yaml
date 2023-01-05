@@ -20,6 +20,11 @@ backend:
   cache:
     store: memory
 
+#proxy:
+#  '/rhacs':
+#    target: https://central-rhacs-operator.itzroks-671000wmfn-8vdu9o-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud
+#    changeOrigin: true
+
 integrations:
   github:
     - host: github.com
@@ -30,16 +35,16 @@ auth:
   session:
     secret: ${AUTH_SESSION_SECRET}
   providers:
+    github:
+      development:
+        clientId: ${AUTH_GITHUB_CLIENT_ID}
+        clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
     ibm-verify-oidc-provider:
       development:
         metadataUrl: ${AUTH_IBM_VERIFY_META_URL}
         clientId: ${AUTH_IBM_VERIFY_CLIENT_ID}
         clientSecret: ${AUTH_IBM_VERIFY_CLIENT_SECRET}
         prompt: auto
-    github:
-      development:
-        clientId: ${AUTH_GITHUB_CLIENT_ID}
-        clientSecret: ${AUTH_GITHUB_CLIENT_SECRET}
 
 kubernetes:
   serviceLocatorMethod:

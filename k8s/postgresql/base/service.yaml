@@ -2,7 +2,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: postgresql
-  namespace: backstage
+  namespace: backstage-dev
   labels:
     deployment: postgresql
 spec:

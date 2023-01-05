@@ -16,7 +16,7 @@ spec:
       from:
         kind: ImageStreamTag
         namespace: openshift
-        name: 'nodejs:18'
+        name: 'nodejs:18-rhel8'
   source:
     type: Git
     git:

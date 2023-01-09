@@ -148,6 +148,6 @@ catalog:
     # File locations are relative to the current working directory of the
     # backend, for example packages/backend/.
     - type: url
-      target: https://github.com/ce-apac-project-idp/developer-repo-catalog/blob/main/all.yaml
+      target: https://github.com/ce-apac-project-idp/backstage-idp-catalog/blob/main/all.yaml
       rules:
         - allow: [Group, Template, User]

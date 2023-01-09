@@ -102,6 +102,6 @@ catalog:
       rules:
         - allow: [Template]
     - type: url
-      target: https://github.com/ce-apac-project-idp/developer-repo-catalog/blob/main/all.yaml
+      target: https://github.com/ce-apac-project-idp/backstage-idp-catalog/blob/main/all.yaml
       rules:
         - allow: [Group, Template, User]

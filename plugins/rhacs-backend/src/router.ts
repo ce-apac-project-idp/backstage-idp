@@ -3,7 +3,11 @@ import { Config } from '@backstage/config';
 import express from 'express';
 import Router from 'express-promise-router';
 import { Logger } from 'winston';
-import { getViolationSummary } from './utils/requests'
+import { getCentralEndpoint } from "./utils/kubernetes";
+import {
+  createAxiosInstance,
+  getViolationSummary,
+} from './utils/requests'
 
 export interface RouterOptions {
   logger: Logger;
@@ -16,15 +20,28 @@ export async function createRouter(
   const { config } = options;
 
   const router = Router();
+  const axiosInstance = await createAxiosInstance(config);
+
   router.use(express.json());
+
+  router.get(
+    '/v1/central',
+    ({}, response) => {
+      return getCentralEndpoint()
+        .then(resp => response.json(resp))
+        .catch(err => {
+          return response.status(500).json({
+            error: err.message
+          })
+        })
+    },
+  );
 
   router.get(
     '/v1/alerts/summary/counts',
     ({}, response) => {
-      return getViolationSummary(config)
-        .then(resp => {
-          return response.json(resp)
-        })
+      return getViolationSummary(axiosInstance)
+        .then(resp => response.json(resp))
         .catch(err => {
           return response.status(500).json({
             error: err.message

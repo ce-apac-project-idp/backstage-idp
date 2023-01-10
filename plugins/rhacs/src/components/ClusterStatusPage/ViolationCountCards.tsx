@@ -1,10 +1,9 @@
-// @ts-nocheck
-
-import React, {createContext, useContext, useEffect, useState} from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Button,
   ItemCardHeader,
   ItemCardGrid,
+  WarningPanel,
 } from '@backstage/core-components';
 import {
   Grid,
@@ -12,7 +11,7 @@ import {
   CardContent,
   CardMedia,
   Card,
-  CardActions, makeStyles,
+  CardActions, makeStyles, CircularProgress,
 } from '@material-ui/core';
 import useAsyncFn from 'react-use/lib/useAsyncFn';
 import useDebounce from 'react-use/lib/useDebounce';
@@ -20,32 +19,7 @@ import useDebounce from 'react-use/lib/useDebounce';
 import { getViolationSummary } from "../../helpers/requests";
 
 import { configApiRef, useApi} from "@backstage/core-plugin-api";
-
-const response = {
-  "groups": [
-    {
-      "group": "",
-      "counts": [
-        {
-          "severity": "LOW_SEVERITY",
-          "count": "215"
-        },
-        {
-          "severity": "MEDIUM_SEVERITY",
-          "count": "157"
-        },
-        {
-          "severity": "HIGH_SEVERITY",
-          "count": "155"
-        },
-        {
-          "severity": "CRITICAL_SEVERITY",
-          "count": "2"
-        }
-      ]
-    }
-  ]
-}
+import { RhacsContext } from "./ClusterStatusPage";
 
 const styles = {
   low_severity: {
@@ -66,41 +40,36 @@ const styles = {
   }
 };
 
-const centralEndpoint='https://central-rhacs-operator.itzroks-671000wmfn-8vdu9o-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud'
-
 const useStyles = makeStyles(styles);
 
 export const ViolationCountCards = () => {
   const configApi = useApi(configApiRef);
   const classes = useStyles();
 
-  const [summary, setSummary] = useState<>([]);
+  const context = useContext(RhacsContext);
+
+  const [summary, setSummary] = useState<{severity: string, count: string}[]>([]);
 
   const [{ loading, error }, refresh] = useAsyncFn(
     async() => {
-      const response = await getViolationSummary(configApi);
-      // const data = response.groups[0].counts
-
-      // if (!data) {
-      //   return null;
-      // }
-
-      console.log(response)
-      setSummary(response.data.groups[0].counts)
-    }
+      const data = await getViolationSummary(configApi);
+      setSummary(data.groups[0].counts)
+    },
+    [],
+    { loading: true }
   );
 
   useDebounce(refresh, 10);
 
   if (error) {
-    console.log(error)
+    return (
+      <WarningPanel severity="warning" title={"Oops:" + error.toString()}/>
+    )
   }
 
-  //
-  // useEffect(() => {
-  //   const res = getViolationSummary(configApi)
-  //   console.log(res)
-  // })
+  if (loading) {
+    return <CircularProgress />;
+  }
 
   return (
     <Grid>
@@ -121,7 +90,7 @@ export const ViolationCountCards = () => {
               </Typography>
             </CardContent>
             <CardActions>
-              <Button color="primary" to={`${centralEndpoint}/main/violations?s[Severity]=${value.severity}`}>
+              <Button color="primary" to={`${context.centralEndpoint}/main/violations?s[Severity]=${value.severity}`}>
                 Details
               </Button>
             </CardActions>

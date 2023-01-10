@@ -1,19 +1,22 @@
 import http from 'http'
-
-const k8s = require('@kubernetes/client-node');
-
-const kubeConfig = new k8s.KubeConfig();
-kubeConfig.loadFromDefault();
-
-const kubeApi = kubeConfig.makeApiClient(k8s.CoreV1Api);
+import * as k8s from '@kubernetes/client-node';
 
 type KubernetesResponse = {
   response: http.IncomingMessage
   body: any
 }
-function kubeResponseHandler(data: KubernetesResponse) {
-  return data.body
+
+type Route = {
+  spec: {
+    host: string
+  }
 }
+
+const kubeConfig = new k8s.KubeConfig();
+kubeConfig.loadFromDefault();
+
+const kubeCoreApi = kubeConfig.makeApiClient(k8s.CoreV1Api);
+const kubeCRDApi = kubeConfig.makeApiClient(k8s.CustomObjectsApi);
 
 function kubeErrorHandler(err: unknown) {
   if (err instanceof Error) {
@@ -22,10 +25,21 @@ function kubeErrorHandler(err: unknown) {
   throw new Error((err as KubernetesResponse).body.reason)
 }
 
-export async function getCentral() {
+export async function getNamespace() {
+  return kubeCoreApi.listNamespace()
+}
+
+export async function getCentralEndpoint() {
   try {
-    const response = await kubeApi.readNamespacedEndpoints('central', 'rhacs-operator')
-    return kubeResponseHandler(response)
+    const { body } = await kubeCRDApi.getNamespacedCustomObject(
+      'route.openshift.io',
+      'v1',
+      'rhacs-operator',
+      'routes',
+      'central',
+    ) as { body: Route }
+
+    return body.spec.host
   } catch(err) {
     return kubeErrorHandler(err)
   }

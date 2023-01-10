@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {
   ItemCardHeader,
   ItemCardGrid,
@@ -10,17 +10,19 @@ import {
   CardMedia,
   Card,
 } from '@material-ui/core';
+import { RhacsContext } from "./ClusterStatusPage";
 
-const centralEndpoint='https://central-rhacs-operator.itzroks-671000wmfn-8vdu9o-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud'
 
 export const QuickLinksCards = () => {
+  const context = useContext(RhacsContext);
+
   return (
     <Grid>
       <p />
       <Typography variant="h3"> Quick Links </Typography>
       <ItemCardGrid>
         <Card key={"centralEndpoint"}>
-          <Link to={centralEndpoint}>
+          <Link to={context.centralEndpoint}>
             <CardMedia>
               <ItemCardHeader title={"RHACS Console >"} />
             </CardMedia>

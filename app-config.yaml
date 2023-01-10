@@ -119,6 +119,9 @@ kubernetes:
 rhacm:
   hub: ${RHACM_HUB_CLUSTER}
 
+rhacs:
+  token: ${RHACS_API_TOKEN}
+
 tekton:
   - baseUrl: ${KUBE_API_ENDPOINT}
     authorizationBearerToken: ${KUBE_SERVICE_ACCOUNT_TOKEN}

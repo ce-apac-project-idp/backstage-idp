@@ -32,3 +32,21 @@ export async function getViolationSummary(instance: AxiosInstance) {
     throw err;
   }
 }
+
+export async function getRecentAlerts(instance: AxiosInstance) {
+  try {
+    const response = await instance.request({
+      url: '/api/graphql',
+      params: {
+        opname: 'mostRecentAlerts'
+      },
+      data: '{\n"operationName":"mostRecentAlerts",\n"variables":{"query":"Severity:CRITICAL_SEVERITY"},\n"query":"query mostRecentAlerts($query: String) {alerts: violations(query: $query pagination: {limit: 3, sortOption: {field: \\"Violation Time\\", reversed: true}}) {id time deployment {clusterName namespace name __typename } policy { name severity __typename}__typename}}"\n}'
+    });
+
+    return response.data;
+  } catch (err) {
+    throw err;
+  }
+}
+
+

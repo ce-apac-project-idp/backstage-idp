@@ -37,7 +37,7 @@ export async function getCentralEndpoint(
   }
 }
 
-type RhacsViolationSummary = {
+export type RhacsViolationSummary = {
   groups: [
     {
       group: string;
@@ -51,14 +51,45 @@ type RhacsViolationSummary = {
   ];
 };
 
+export type RhacsAlert = {
+  id: string,
+  time: string,
+  deployment: {
+    "clusterName": string,
+    "namespace": string,
+    "name": string,
+    "__typename": "Alert_Deployment"
+  },
+  policy: {
+    name: string,
+    severity: string,
+    "__typename": "Policy"
+  },
+  "__typename": "Alert"
+}
+
 export async function getViolationSummary(
   configApi: ConfigApi,
 ): Promise<RhacsViolationSummary> {
   try {
     const response = await requestBackend(configApi, {
-      url: '/v1/alerts/summary/counts',
+      url: '/v1/alerts/summary',
     });
     return response;
+  } catch (err) {
+    throw err;
+  }
+}
+
+export async function getRecentAlerts(
+  configApi: ConfigApi,
+): Promise<RhacsAlert[]> {
+  try {
+    const response = await requestBackend(configApi, {
+      url: '/v1/alerts/recent',
+    }) as { data: {alerts: RhacsAlert[] }};
+
+    return response.data.alerts;
   } catch (err) {
     throw err;
   }

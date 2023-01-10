@@ -10,6 +10,7 @@ import {
 } from '@backstage/core-components';
 
 import { ViolationCountCards } from './ViolationCountCards';
+import { RecentAlertsCard } from './RecentAlertsCard'
 import { QuickLinksCards } from './QuickLinksCards';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { getCentralEndpoint } from '../../helpers/requests';
@@ -51,21 +52,8 @@ export const ClusterStatusPage = () => {
         <RhacsContext.Provider value={{ centralEndpoint: central }}>
           <Content>
             <ViolationCountCards />
-            {/* <Grid> */}
-            {/*   <div style={containerStyle}> */}
-            {/*     <InfoCard title="RHACS Summary" noPadding> */}
-            {/*       <Table */}
-            {/*         options={{ */}
-            {/*           search: false, */}
-            {/*           paging: false, */}
-            {/*           toolbar: false, */}
-            {/*         }} */}
-            {/*         data={data} */}
-            {/*         columns={columns} */}
-            {/*       /> */}
-            {/*     </InfoCard> */}
-            {/*   </div> */}
-            {/* </Grid> */}
+            <br />
+            <RecentAlertsCard />
             <QuickLinksCards />
           </Content>
         </RhacsContext.Provider>

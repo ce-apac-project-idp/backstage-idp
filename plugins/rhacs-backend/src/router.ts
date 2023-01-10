@@ -4,7 +4,7 @@ import express from 'express';
 import Router from 'express-promise-router';
 import { Logger } from 'winston';
 import { getCentralEndpoint } from './utils/kubernetes';
-import { createAxiosInstance, getViolationSummary } from './utils/requests';
+import {createAxiosInstance, getRecentAlerts, getViolationSummary} from './utils/requests';
 
 export interface RouterOptions {
   logger: Logger;
@@ -31,8 +31,18 @@ export async function createRouter(
       });
   });
 
-  router.get('/v1/alerts/summary/counts', ({}, response) => {
+  router.get('/v1/alerts/summary', ({}, response) => {
     return getViolationSummary(axiosInstance)
+      .then(resp => response.json(resp))
+      .catch(err => {
+        return response.status(500).json({
+          error: err.message,
+        });
+      });
+  });
+
+  router.get('/v1/alerts/recent', ({}, response) => {
+    return getRecentAlerts(axiosInstance)
       .then(resp => response.json(resp))
       .catch(err => {
         return response.status(500).json({

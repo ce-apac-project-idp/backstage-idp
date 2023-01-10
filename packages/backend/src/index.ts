@@ -28,8 +28,8 @@ import { PluginEnvironment } from './types';
 import { ServerPermissionClient } from '@backstage/plugin-permission-node';
 import { DefaultIdentityClient } from '@backstage/plugin-auth-node';
 
-console.log(process.env.KUBE_API_ENDPOINT)
-console.log(process.env.KUBE_SERVICE_ACCOUNT_TOKEN)
+console.log(process.env.KUBE_API_ENDPOINT);
+console.log(process.env.KUBE_SERVICE_ACCOUNT_TOKEN);
 
 function makeCreateEnv(config: Config) {
   const root = getRootLogger();
@@ -85,9 +85,9 @@ async function main() {
   const searchEnv = useHotMemoize(module, () => createEnv('search'));
   const appEnv = useHotMemoize(module, () => createEnv('app'));
   const kubernetesEnv = useHotMemoize(module, () => createEnv('kubernetes'));
-  const tektonEnv = useHotMemoize(module, () => createEnv('tekton'))
-  const rhacmEnv = useHotMemoize(module, () => createEnv('rhacm'))
-  const rhacsEnv = useHotMemoize(module, () => createEnv('rhacs'))
+  const tektonEnv = useHotMemoize(module, () => createEnv('tekton'));
+  const rhacmEnv = useHotMemoize(module, () => createEnv('rhacm'));
+  const rhacsEnv = useHotMemoize(module, () => createEnv('rhacs'));
 
   const apiRouter = Router();
   apiRouter.use('/catalog', await catalog(catalogEnv));
@@ -97,7 +97,7 @@ async function main() {
   apiRouter.use('/proxy', await proxy(proxyEnv));
   apiRouter.use('/search', await search(searchEnv));
   apiRouter.use('/kubernetes', await kubernetes(kubernetesEnv));
-  apiRouter.use('/tekton-pipelines', await tekton(tektonEnv) );
+  apiRouter.use('/tekton-pipelines', await tekton(tektonEnv));
   apiRouter.use('/rhacm', await rhacm(rhacmEnv));
   apiRouter.use('/rhacs', await rhacs(rhacsEnv));
 

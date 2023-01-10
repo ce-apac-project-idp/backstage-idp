@@ -203,4 +203,4 @@ const component = (
 export default component;
 
 */
-export {}
+export {};

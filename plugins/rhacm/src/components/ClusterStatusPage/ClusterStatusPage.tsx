@@ -87,6 +87,8 @@ const CatalogClusters = () => {
       });
 
       const clusters = await getClusters(configApi);
+      console.log(clusterResourceEntities);
+      console.log(clusters);
 
       if ('error' in clusters) {
         throw new Error((clusters as ErrorResponseBody).error.message);

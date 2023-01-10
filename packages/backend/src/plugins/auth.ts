@@ -7,8 +7,8 @@ import { Router } from 'express';
 import { PluginEnvironment } from '../types';
 import {
   DEFAULT_NAMESPACE,
-  stringifyEntityRef
-} from "@backstage/catalog-model";
+  stringifyEntityRef,
+} from '@backstage/catalog-model';
 
 export default async function createPlugin(
   env: PluginEnvironment,
@@ -62,17 +62,17 @@ export default async function createPlugin(
             const userRef = stringifyEntityRef({
               kind: 'User',
               name: info.result.userinfo.sub as string,
-              namespace: DEFAULT_NAMESPACE
+              namespace: DEFAULT_NAMESPACE,
             });
             return ctx.issueToken({
               claims: {
-                sub: userRef,    // The user's identity
-                ent: [ userRef ] // A list of identities that the user claims ownership through
-              }
-            })
-          }
-        }
-      })
+                sub: userRef, // The user's identity
+                ent: [userRef], // A list of identities that the user claims ownership through
+              },
+            });
+          },
+        },
+      }),
     },
   });
 }

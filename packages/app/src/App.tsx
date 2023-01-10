@@ -34,29 +34,31 @@ import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
 
-import { badgesPlugin } from '@backstage/plugin-badges'
+import { badgesPlugin } from '@backstage/plugin-badges';
 import { SignInPage } from '@backstage/core-components';
 import { RhacmPage } from '@internal/backstage-plugin-rhacm';
 import { RhacsPage } from '@internal/backstage-plugin-rhacs';
 
-
-const appComponent = process.env.NODE_ENV === 'development' ? {} :
-  {
-    SignInPage: props => (
-      process.env.NODE_ENV === 'development' ?
-        <div /> :
-        <SignInPage
-          {...props}
-          auto
-          provider={{
-            id: 'ibm-verify-oidc-provider',
-            title: 'IBM Security Verify',
-            message: 'Sign in using IBM Security Verify',
-            apiRef: ibmOIDCAuthApiRef,
-          }}
-        />
-    ),
-  } as AppComponents;
+const appComponent =
+  process.env.NODE_ENV === 'development'
+    ? {}
+    : ({
+        SignInPage: props =>
+          process.env.NODE_ENV === 'development' ? (
+            <div />
+          ) : (
+            <SignInPage
+              {...props}
+              auto
+              provider={{
+                id: 'ibm-verify-oidc-provider',
+                title: 'IBM Security Verify',
+                message: 'Sign in using IBM Security Verify',
+                apiRef: ibmOIDCAuthApiRef,
+              }}
+            />
+          ),
+      } as AppComponents);
 
 const app = createApp({
   apis,

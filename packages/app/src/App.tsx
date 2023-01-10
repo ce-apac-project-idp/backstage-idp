@@ -29,7 +29,7 @@ import { Root } from './components/Root';
 
 import { AlertDisplay, OAuthRequestDialog } from '@backstage/core-components';
 import { createApp } from '@backstage/app-defaults';
-import { FlatRoutes } from '@backstage/core-app-api';
+import { AppComponents, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
@@ -39,25 +39,29 @@ import { SignInPage } from '@backstage/core-components';
 import { RhacmPage } from '@internal/backstage-plugin-rhacm';
 import { RhacsPage } from '@internal/backstage-plugin-rhacs';
 
+
+const appComponent = process.env.NODE_ENV === 'development' ? {} :
+  {
+    SignInPage: props => (
+      process.env.NODE_ENV === 'development' ?
+        <div /> :
+        <SignInPage
+          {...props}
+          auto
+          provider={{
+            id: 'ibm-verify-oidc-provider',
+            title: 'IBM Security Verify',
+            message: 'Sign in using IBM Security Verify',
+            apiRef: ibmOIDCAuthApiRef,
+          }}
+        />
+    ),
+  } as AppComponents;
+
 const app = createApp({
   apis,
   plugins: [badgesPlugin],
-  components: {
-        SignInPage: props => (
-          process.env.NODE_ENV === 'dev' ?
-            null :
-            <SignInPage
-              {...props}
-              auto
-              provider={{
-                id: 'ibm-verify-oidc-provider',
-                title: 'IBM Security Verify',
-                message: 'Sign in using IBM Security Verify',
-                apiRef: ibmOIDCAuthApiRef,
-             }}
-           />
-      ),
-     },
+  components: appComponent,
   bindRoutes({ bind }) {
     bind(catalogPlugin.externalRoutes, {
       createComponent: scaffolderPlugin.routes.root,

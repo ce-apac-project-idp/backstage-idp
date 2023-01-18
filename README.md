@@ -242,6 +242,7 @@ stringData:
 oc apply -f ./k8s/backstage
 ```
 
+
 3. Navigate to the `backstage` route in the `backstage` project to access the application from OpenShift. 
 
 ---

@@ -5,6 +5,3 @@ bases:
   - ../../base
 
 namespace: backstage-dev
-
-patches:
-  - ./deployment-patches.yaml

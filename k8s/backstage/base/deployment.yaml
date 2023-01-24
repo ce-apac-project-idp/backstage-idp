@@ -24,4 +24,4 @@ spec:
                 name: backstage-config
             - secretRef:
                 name: postgresql-secrets
-          image: image-registry.openshift-image-registry.svc:5000/backstage/backstage:latest
+          image: backstage:latest

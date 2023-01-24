@@ -1,0 +1,32 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: kustomize-update-backstage
+spec:
+  params:
+    - default: 'image-registry.openshift-image-registry.svc:5000/backstage-dev/backstage'
+      name: image-name
+      type: string
+    - name: image-sha
+      type: string
+  steps:
+    - image: >-
+        quay.io/wpernath/kustomize-ubi@sha256:cc5e4193e5af6d3a0134e4be5236f81f27ad7c4ac50ac987be08a0b72616582b
+      name: kustomize-update
+      resources: {}
+      script: >
+        /bin/bash
+
+        set -e
+
+        cd /workspace/shared-data/k8s/backstage/overlays/dev
+
+        kustomize edit set image
+        backstage=$(params.image-name)@$(params.image-sha)
+
+        kustomize build > deployment.yaml
+
+        cat deployment.yaml
+  workspaces:
+    - description: Workspace to store kustomize build in
+      name: shared-data

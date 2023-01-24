@@ -1,0 +1,70 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: backstage-build
+spec:
+  params:
+    - default: 'git@github.com:ce-apac-project-idp/backstage-idp.git'
+      description: Git repo to clone
+      name: repo
+      type: string
+  tasks:
+    - name: git-clone
+      params:
+        - name: url
+          value: $(params.repo)
+        - name: revision
+          value: dev-tekton
+        - name: submodules
+          value: 'true'
+        - name: depth
+          value: '1'
+        - name: sslVerify
+          value: 'true'
+        - name: deleteExisting
+          value: 'true'
+        - name: verbose
+          value: 'true'
+        - name: gitInitImage
+          value: >-
+            registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:dde6d6d4b40f87ccc6737f1e317c13f6ff153155da4ebc48a2a5ebf31582f727
+        - name: userHome
+          value: /tekton/home
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      workspaces:
+        - name: output
+          workspace: pipeline-shared-data
+    - name: openshift-build-gitops
+      params:
+        - name: buildconfig-name
+          value: backstage-build-tekton-dev
+        - name: sha-tag
+          value: $(tasks.git-clone.results.commit)
+        - name: imagestream-name
+          value: backstage
+        - name: imagestream-tag
+          value: tekton-dev
+      runAfter:
+        - git-clone
+      taskRef:
+        kind: Task
+        name: openshift-build-gitops
+      workspaces:
+        - name: shared-data
+          workspace: pipeline-shared-data
+    - name: kustomize-update-backstage
+      params:
+        - name: image-sha
+          value: $(tasks.openshift-build-gitops.results.image-sha)
+      runAfter:
+        - openshift-build-gitops
+      taskRef:
+        kind: Task
+        name: kustomize-update-backstage
+      workspaces:
+        - name: shared-data
+          workspace: pipeline-shared-data
+  workspaces:
+    - name: pipeline-shared-data

@@ -1,0 +1,69 @@
+piVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: openshift-build-gitops
+spec:
+  params:
+    - default: backstage-build
+      name: buildconfig-name
+      type: string
+    - name: sha-tag
+      type: string
+    - default: backstage
+      name: imagestream-name
+      type: string
+    - default: latest
+      name: imagestream-tag
+      type: string
+  results:
+    - name: image-name
+      type: string
+    - name: image-sha
+      type: string
+  steps:
+    - image: 'image-registry.openshift-image-registry.svc:5000/openshift/tools:latest'
+      name: openshift-build
+      resources: {}
+      script: >
+        set -ex
+
+
+        echo "Starting BuildConfig build..."
+
+
+        oc start-build backstage-build
+
+        BUILD_NAME=$(oc get builds --sort-by={metadata.creationTimestamp}
+        --no-headers | tail -n 1 | awk '{print $1}')
+
+        echo "Following build: $BUILD_NAME" 
+
+        echo "Build in progress. Waiting for completion...."
+
+
+        while [[ $(oc get build $BUILD_NAME -o jsonpath="{.status.phase}") !=
+        "Complete" ]]; do
+          sleep 30
+          echo "Still waiting. Status: $(oc get build $BUILD_NAME -o jsonpath="{.status.phase}")"
+        done
+
+        IMAGE=$(oc get build $BUILD_NAME
+        -o=jsonpath='{.status.outputDockerImageReference}')
+
+        SHA=$(oc get build $BUILD_NAME
+        -o=jsonpath='{.status.output.to.imageDigest}')
+
+
+        echo "Build finished."
+
+        echo "Image name: $IMAGE" 
+
+        echo "Image SHA: $SHA"
+
+        echo $IMAGE | tee /tekton/results/image-name
+
+        echo $SHA | tee /tekton/results/image-sha
+      workingDir: /workspace/shared-data
+  workspaces:
+    - description: Workspace to store output in
+      name: shared-data

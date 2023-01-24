@@ -30,6 +30,8 @@ spec:
             registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:dde6d6d4b40f87ccc6737f1e317c13f6ff153155da4ebc48a2a5ebf31582f727
         - name: userHome
           value: /tekton/home
+        - name: subdirectory
+          value: backstage-idp
       taskRef:
         kind: ClusterTask
         name: git-clone
@@ -48,6 +50,7 @@ spec:
           value: tekton-dev
       runAfter:
         - git-clone
+        - git-clone-gitops
       taskRef:
         kind: Task
         name: openshift-build-gitops
@@ -65,6 +68,37 @@ spec:
         name: kustomize-update-backstage
       workspaces:
         - name: shared-data
+          workspace: pipeline-shared-data
+    - name: git-clone-gitops
+      params:
+        - name: url
+          value: 'git@github.com:ce-apac-project-idp/otp-gitops-services.git'
+        - name: revision
+          value: main
+        - name: submodules
+          value: 'true'
+        - name: depth
+          value: '1'
+        - name: sslVerify
+          value: 'true'
+        - name: crtFileName
+          value: ca-bundle.crt
+        - name: deleteExisting
+          value: 'true'
+        - name: verbose
+          value: 'true'
+        - name: gitInitImage
+          value: >-
+            registry.redhat.io/openshift-pipelines/pipelines-git-init-rhel8@sha256:a538c423e7a11aae6ae582a411fdb090936458075f99af4ce5add038bb6983e8
+        - name: userHome
+          value: /tekton/home
+        - name: subdirectory
+          value: otp-gitops-services
+      taskRef:
+        kind: ClusterTask
+        name: git-clone
+      workspaces:
+        - name: output
           workspace: pipeline-shared-data
   workspaces:
     - name: pipeline-shared-data

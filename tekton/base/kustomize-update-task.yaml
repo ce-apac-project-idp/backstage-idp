@@ -19,14 +19,21 @@ spec:
 
         set -e
 
-        cd /workspace/shared-data/k8s/backstage/overlays/dev
+        cd /workspace/shared-data/backstage-idp/k8s/backstage/overlays/dev
 
         kustomize edit set image
         backstage=$(params.image-name)@$(params.image-sha)
 
-        kustomize build > deployment.yaml
+        kustomize build > backstage-dev-deployment.yaml
 
-        cat deployment.yaml
+        cat backstage-dev-deployment.yaml
+
+        mv backstage-dev-deployment.yaml
+        /workspace/shared-data/otp-gitops-services/instances/backstage/backstage
+
+        ls
+        /workspace/shared-data/otp-gitops-services/instances/backstage/backstage
   workspaces:
     - description: Workspace to store kustomize build in
       name: shared-data
+

@@ -7,5 +7,4 @@ spec:
     spec:
       containers:
         - name: backstage
-          image: image-registry.openshift-image-registry.svc:5000/backstage-dev/backstage:latest
           command: ["/bin/sh", "-c", "NODE_TLS_REJECT_UNAUTHORIZED=0 node packages/backend --config app-config.yaml"]

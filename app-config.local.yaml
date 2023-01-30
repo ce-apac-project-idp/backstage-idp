@@ -108,3 +108,7 @@ catalog:
       target: https://github.com/ce-apac-project-idp/backstage-idp-catalog/blob/main/all.yaml
       rules:
         - allow: [Group, Template, User]
+    - type: file
+      target: ../../examples/tekton.yaml
+      rules:
+        - allow: [ Template ]

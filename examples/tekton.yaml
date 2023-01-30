@@ -1,0 +1,115 @@
+apiVersion: scaffolder.backstage.io/v1beta3
+kind: Template
+metadata:
+  name: test
+  title: test
+  description: test
+spec:
+  owner: user:guest
+  type: service
+  parameters:
+    - title: Fill in some steps
+      required:
+        - repoURL
+      properties:
+        repoURL:
+          title: Target repo SSH Clone URL
+          type: string
+          description: The SSH Clone URL of the repo containing your Custom Resources
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+          default: git@github.com:ce-apac-project-idp/developer-repositories.git
+    - title: Developer Name
+      required:
+        - developerName
+      properties:
+        developerName:
+          title: Developer Name
+          type: string
+          description: The developer name to associate resources with
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+          default: ryu
+    - title: Choose a Target Cloud Environment
+      required:
+        - targetEnv
+      properties:
+        targetEnv:
+          title: Target Environment
+          type: string
+          enum: ["IBM Cloud", "AWS", "Azure", "GCP"]
+          default: AWS
+    - title: Name your deployed application
+      required:
+        - applicationName
+      properties:
+        applicationName:
+          title: Application Name
+          type: string
+          description: Unique name of your application
+          ui:autofocus: true
+          ui:options:
+            rows: 5
+          default: my-react
+  steps:
+    # Trigger devsecops pipeline to build and check developer's application.
+    - id: trigger-build
+      name: Trigger Build Pipeline
+      action: ibm:trigger-devsecops-pipeline
+      input:
+        applicationName: ${{ parameters.applicationName }}
+        developerName: ${{ parameters.developerName }}
+        repoURL: ${{ parameters.repoURL }}
+        targetEnv: ${{ parameters.targetEnv }}
+
+#    # Fetch developer's repo to add catalog-info.yaml
+#    - id: fetch-repo
+#      name: Fetch Developer's Repository
+#      action: fetch:plain
+#      input:
+#        url: ${{ parameters.repoURL }}
+#        targetPath: demo-app-react
+#
+#    # Write catlog-info.yaml to create a new component.
+#    - id: write-catalog
+#      name: Write catalog-info.yaml
+#      action: catalog:write
+#      input:
+#        filePath: catalog-info.yaml
+#        entity:
+#          apiVersion: backstage.io/v1alpha1
+#          kind: Component
+#          metadata:
+#            name: developer-app-${{ parameters.developerName }}-${{ parameters.applicationName }}
+#            description: A developer's software component registered by the DevSecOps pipeline
+#            labels:
+#              applicationName: ${{ parameters.applicationName }}
+#              developerName: ${{ parameters.developerName }}
+#              repoURL: ${{ parameters.repoURL }}
+#              targetEnv: ${{ parameters.targetEnv }}
+#          spec:
+#            type: service
+#            lifecycle: experimental
+#            owner: user:guest
+#
+#    # The final step is to register the new component in the catalog.
+#    - id: register-catalog
+#      name: Register New Component
+#      action: catalog:register
+#      input:
+#        repoContentsUrl: ${{ parameters.repoURL }}
+#        catalogInfoPath: '/catalog-info.yaml'
+
+  output:
+    links:
+      - title: Repository
+        url: ${{ parameters.repoURL }}
+      - title: Open in catalog
+        icon: catalog
+        entityRef: ${{ steps['register-catalog'].output.entityRef }}
+    Image: ${{ steps['trigger-build'].output }}
+
+
+

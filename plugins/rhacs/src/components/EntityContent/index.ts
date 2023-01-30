@@ -1,0 +1,1 @@
+export { EntityRhacsContent } from './EntityRhacsContent';

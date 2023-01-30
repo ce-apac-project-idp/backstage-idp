@@ -60,6 +60,9 @@ import {
   EntityTektonPipelinesContent,
   isTektonCiAvailable,
 } from '@jquad-group/plugin-tekton-pipelines';
+import {
+  EntityRhacsContent,
+} from '@internal/backstage-plugin-rhacs';
 
 import resource from './resource';
 
@@ -172,9 +175,11 @@ const serviceEntityPage = (
     <EntityLayout.Route path="/docs" title="Docs">
       {techdocsContent}
     </EntityLayout.Route>
+
     <EntityLayout.Route path="/kubernetes" title="Kubernetes">
       <EntityKubernetesContent refreshIntervalMs={30000} />
     </EntityLayout.Route>
+
     <EntityLayout.Route
       path="/tekton-pipelines-plugin"
       title="Tekton Pipelines"
@@ -193,6 +198,11 @@ const serviceEntityPage = (
         </EntitySwitch.Case>
       </EntitySwitch>
     </EntityLayout.Route>
+
+    <EntityLayout.Route path="/rhacs" title="RHACS">
+      <EntityRhacsContent refreshIntervalMs={30000} />
+    </EntityLayout.Route>
+
   </EntityLayout>
 );
 

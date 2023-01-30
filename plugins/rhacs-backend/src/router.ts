@@ -51,6 +51,20 @@ export async function createRouter(
       });
   });
 
+  router.post('/v1/images', (request, response) => {
+    console.log('RHACS /v1/image', request.body)
+    // TODO: update contexts;
+
+    return Promise.resolve(true)
+      .then(resp => response.json(resp))
+      .catch(err => {
+        return response.status(500).json({
+          message: 'Could not deliver image reference to RHACS plugin',
+          error: err.message,
+        });
+      });
+  });
+
   router.use(errorHandler({ logClientErrors: true }));
   return router;
 }

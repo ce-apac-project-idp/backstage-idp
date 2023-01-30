@@ -20,3 +20,12 @@ export const RhacsPage = rhacsPlugin.provide(
     mountPoint: rootRouteRef,
   }),
 );
+
+export const EntityRhacsContent = rhacsPlugin.provide(
+  createRoutableExtension({
+    name: 'EntityRhacsContent',
+    component: () =>
+      import('./components/EntityContent').then(m => m.EntityRhacsContent),
+    mountPoint: rootRouteRef,
+  }),
+);

@@ -15,6 +15,7 @@ import { QuickLinksCards } from './QuickLinksCards';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { getCentralEndpoint } from '../../helpers/requests';
 
+
 export const RhacsContext = createContext({
   centralEndpoint: 'https://',
 });

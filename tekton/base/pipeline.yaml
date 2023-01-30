@@ -100,5 +100,41 @@ spec:
       workspaces:
         - name: output
           workspace: pipeline-shared-data
+    - name: gitops
+      params:
+        - name: BASE_IMAGE
+          value: >-
+            docker.io/alpine/git:v2.26.2@sha256:23618034b0be9205d9cc0846eb711b12ba4c9b468efdd8a59aac1d7b1a23363f
+        - name: GIT_USER_NAME
+          value: OpenshiftPipelines
+        - name: GIT_USER_EMAIL
+          value: openshiftpipelines@ibm.com
+        - name: GIT_SCRIPT
+          value: |-
+
+            cd /workspace/source/otp-gitops-services
+
+            git checkout main
+
+            git status
+
+            git add -A
+
+            git commit -m "update backstage-dev-deployment to latest build"
+
+            git push
+        - name: USER_HOME
+          value: /root
+        - name: VERBOSE
+          value: 'true'
+      runAfter:
+        - kustomize-update-backstage
+      taskRef:
+        kind: ClusterTask
+        name: git-cli
+      workspaces:
+        - name: source
+          workspace: pipeline-shared-data
   workspaces:
     - name: pipeline-shared-data
+

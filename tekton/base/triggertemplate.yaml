@@ -1,0 +1,30 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: backstage-build-trigger
+spec:
+  params:
+    - name: source-repo
+    - name: user-binding
+  resourcetemplates:
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        generateName: yasrs-pipeline-run-
+      spec:
+        params:
+          - name: repo
+            value: $(tt.params.source-repo)
+        pipelineRef:
+          name: backstage-build
+        workspaces:
+          - name: pipeline-shared-data
+            volumeClaimTemplate:
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: 1Gi
+                storageClassName: ocs-storagecluster-cephfs
+

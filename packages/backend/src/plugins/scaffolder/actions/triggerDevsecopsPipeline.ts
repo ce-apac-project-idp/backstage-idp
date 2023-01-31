@@ -171,15 +171,22 @@ export const triggerDevsecopsPipelineAction = () => {
         }
 
         // 4. Extract the image reference and its sha
-        const buildTask = pipelinerunStatus.pipelineSpec.tasks?.find(task => task.name === 'build-push-image');
+        const buildTask = pipelinerunStatus.taskRuns[`${metadata.name}-build-push-image`]
 
         if (!buildTask) {
           ctx.logger.warn('Pipeline finished but could not fetch task info.')
           return
         }
 
+        const imageSHA = buildTask.status.taskResults?.find(result => result.name === 'sha').value;
+
+        if (!imageSHA) {
+          ctx.logger.warn('Could not find Image SHA')
+        }
+
         ctx.logger.info(`Pipeline results: ${JSON.stringify(buildTask.status)}`)
-        ctx.output('imageReference', buildTask.status.taskResults)
+        ctx.logger.info(`Tagged built image with SHA: ${imageSHA}`)
+        ctx.output('imageReference', imageSHA)
 
         const rhacsReponse = await axios.post(
           `/api/rhacs/v1/images`,

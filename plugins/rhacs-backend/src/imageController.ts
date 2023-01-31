@@ -4,17 +4,17 @@
  */
 
 type ImageInfo = {
-  imageReference: string
-  imageSha: string
-  imageOwner: string
-  imageName: string
-}
+  imageReference: string;
+  imageSha: string;
+  imageOwner: string;
+  imageName: string;
+};
 
 export class ImageController {
-  imageReference: string
-  imageSha: string
-  imageOwner: string
-  imageName: string
+  imageReference: string;
+  imageSha: string;
+  imageOwner: string;
+  imageName: string;
 
   constructor() {
     this.imageReference = '';
@@ -41,4 +41,4 @@ export class ImageController {
 }
 
 // Singleton
-export const currentImage = new ImageController()
+export const currentImage = new ImageController();

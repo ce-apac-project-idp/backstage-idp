@@ -21,10 +21,7 @@ export default async function createPlugin(
     reader: env.reader,
   });
 
-  const actions = [
-    ...builtInActions,
-    triggerDevsecopsPipelineAction(),
-  ];
+  const actions = [...builtInActions, triggerDevsecopsPipelineAction()];
 
   return await createRouter({
     actions,

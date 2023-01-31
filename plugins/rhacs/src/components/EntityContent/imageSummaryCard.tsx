@@ -1,7 +1,5 @@
-import React, { useContext} from "react";
-import {
-  InfoCard,
-} from '@backstage/core-components';
+import React, { useContext } from 'react';
+import { InfoCard } from '@backstage/core-components';
 import {
   Table,
   TableBody,
@@ -10,8 +8,7 @@ import {
   CircularProgress,
 } from '@material-ui/core';
 
-import { RhacsContext } from "./EntityRhacsContent";
-
+import { RhacsContext } from './EntityRhacsContent';
 
 export function ImageSummaryCard(props) {
   const context = useContext(RhacsContext);
@@ -22,32 +19,46 @@ export function ImageSummaryCard(props) {
   }
 
   return (
-    <InfoCard title="Image Summary" >
+    <InfoCard title="Image Summary">
       <Table>
         <TableBody>
           <TableRow>
-            <TableCell> <b> Reference </b> </TableCell>
+            <TableCell>
+              {' '}
+              <b> Reference </b>{' '}
+            </TableCell>
             <TableCell> {context.imageReference} </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell> <b> SHA </b> </TableCell>
+            <TableCell>
+              {' '}
+              <b> SHA </b>{' '}
+            </TableCell>
             <TableCell> {context.imageSha} </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell> <b> Last Updated </b> </TableCell>
+            <TableCell>
+              {' '}
+              <b> Last Updated </b>{' '}
+            </TableCell>
             <TableCell> {image.lastUpdated} </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell> <b> Scanner </b> </TableCell>
+            <TableCell>
+              {' '}
+              <b> Scanner </b>{' '}
+            </TableCell>
             <TableCell> {image.scan.dataSource.name} </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell> <b> Scan Time </b> </TableCell>
+            <TableCell>
+              {' '}
+              <b> Scan Time </b>{' '}
+            </TableCell>
             <TableCell> {image.scan.scanTime} </TableCell>
           </TableRow>
         </TableBody>
       </Table>
     </InfoCard>
-  )
+  );
 }
-

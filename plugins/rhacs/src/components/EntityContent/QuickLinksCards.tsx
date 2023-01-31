@@ -9,7 +9,9 @@ export const QuickLinksCards = () => {
   return (
     <ItemCardGrid>
       <Card key="centralEndpoint">
-        <Link to={ `${context.centralEndpoint}/main/vulnerability-management/image/${context.imageSha}` }>
+        <Link
+          to={`${context.centralEndpoint}/main/vulnerability-management/image/${context.imageSha}`}
+        >
           <CardMedia>
             <ItemCardHeader title="RHACS Image Report >" />
           </CardMedia>

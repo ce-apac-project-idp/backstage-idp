@@ -56,21 +56,21 @@ export type RhacsViolationSummary = {
 };
 
 export type RhacsAlert = {
-  id: string,
-  time: string,
+  id: string;
+  time: string;
   deployment: {
-    "clusterName": string,
-    "namespace": string,
-    "name": string,
-    "__typename": "Alert_Deployment"
-  },
+    clusterName: string;
+    namespace: string;
+    name: string;
+    __typename: 'Alert_Deployment';
+  };
   policy: {
-    name: string,
-    severity: string,
-    "__typename": "Policy"
-  },
-  "__typename": "Alert"
-}
+    name: string;
+    severity: string;
+    __typename: 'Policy';
+  };
+  __typename: 'Alert';
+};
 
 export async function getViolationSummary(
   configApi: ConfigApi,
@@ -89,9 +89,9 @@ export async function getRecentAlerts(
   configApi: ConfigApi,
 ): Promise<RhacsAlert[]> {
   try {
-    const response = await requestBackend(configApi, {
+    const response = (await requestBackend(configApi, {
       url: '/v1/alerts/recent',
-    }) as { data: {alerts: RhacsAlert[] }};
+    })) as { data: { alerts: RhacsAlert[] } };
 
     return response.data.alerts;
   } catch (err) {
@@ -100,19 +100,17 @@ export async function getRecentAlerts(
 }
 
 export type ImageInfo = {
-  imageReference: string
-  imageSha: string
-  imageOwner: string
-  imageName: string
-}
+  imageReference: string;
+  imageSha: string;
+  imageOwner: string;
+  imageName: string;
+};
 
-export async function getImageContext(
-  configApi: ConfigApi,
-): Promise<any> {
+export async function getImageContext(configApi: ConfigApi): Promise<any> {
   try {
-    const response = await requestBackend(configApi, {
+    const response = (await requestBackend(configApi, {
       url: '/v1/imagecontext',
-    }) as { data: ImageInfo };
+    })) as { data: ImageInfo };
 
     return response;
   } catch (err) {
@@ -131,7 +129,7 @@ export async function getImageFromRhacs(
 
     const response = await requestBackend(configApi, {
       url: `/v1/images/${sha}`,
-      timeout: 2000  // 1000ms returns timeout I don't know why
+      timeout: 2000, // 1000ms returns timeout I don't know why
     });
 
     return response;

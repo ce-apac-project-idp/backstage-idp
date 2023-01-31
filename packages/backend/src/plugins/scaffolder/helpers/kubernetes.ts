@@ -13,24 +13,24 @@ export interface PipelineRunStatus {
     reason: string;
     status: 'Unknown' | 'True' | 'False';
     type: 'Started' | 'Running' | 'Succeeded' | 'Completed' | 'Completed';
-  }>
+  }>;
   startTime?: string;
   completionTime?: string;
-  pipelineSpec : {
+  pipelineSpec: {
     tasks: Array<{
       name: string;
       status: {
-        taskResults?: string[]
-      }
-    }>
-  }
+        taskResults?: string[];
+      };
+    }>;
+  };
 }
 
 export interface PipelineRun {
   metadata: {
     name: string;
     namespace: string;
-  }
+  };
   status?: PipelineRunStatus;
 }
 
@@ -41,7 +41,7 @@ const kubeCoreApi = kubeConfig.makeApiClient(k8s.CoreV1Api);
 const kubeCRDApi = kubeConfig.makeApiClient(k8s.CustomObjectsApi);
 
 function kubeErrorHandler(err: unknown) {
-  console.log(err)
+  console.log(err);
   if (err instanceof Error) {
     throw new Error(err.message);
   }
@@ -58,15 +58,14 @@ export async function findPipelineRunByEventId(eventId: string) {
       undefined,
       undefined,
       undefined,
-      `triggers.tekton.dev/triggers-eventid=${eventId}`
-    )) as { body: { items: PipelineRun[] }};
+      `triggers.tekton.dev/triggers-eventid=${eventId}`,
+    )) as { body: { items: PipelineRun[] } };
 
     if (body.items.length < 1) {
       return null;
     }
 
-    return body.items[0]
-
+    return body.items[0];
   } catch (err) {
     return kubeErrorHandler(err);
   }
@@ -83,10 +82,7 @@ export async function getPipelineRunStatus(namespace: string, name: string) {
     )) as { body: PipelineRun };
 
     return body.status;
-
   } catch (err) {
     return kubeErrorHandler(err);
   }
 }
-
-

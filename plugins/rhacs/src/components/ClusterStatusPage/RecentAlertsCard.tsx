@@ -8,11 +8,7 @@ import {
   StatusError,
   TableColumn,
 } from '@backstage/core-components';
-import {
-  Grid,
-  Typography,
-  CircularProgress,
-} from '@material-ui/core';
+import { Grid, Typography, CircularProgress } from '@material-ui/core';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
 import { RhacsAlert, getRecentAlerts } from '../../helpers/requests';
@@ -23,56 +19,50 @@ const columns: TableColumn[] = [
     title: 'Severity',
     field: 'severity',
     cellStyle: {
-      width: "1%",
-      color: "red"
+      width: '1%',
+      color: 'red',
     },
   },
   {
     title: 'Policy',
     field: 'policy',
     cellStyle: {
-      width: "30%",
+      width: '30%',
     },
   },
   {
     title: 'Cluster',
     field: 'cluster',
     type: 'string',
-    cellStyle: {
-    },
+    cellStyle: {},
   },
   {
     title: 'Deployment',
     field: 'deploy',
     type: 'string',
-    cellStyle: {
-    },
+    cellStyle: {},
   },
   {
     title: 'Time',
     field: 'time',
     type: 'datetime',
-    cellStyle: {
-    },
+    cellStyle: {},
   },
 ];
 
 type RefinedAlert = {
-  time: string
-  cluster: string
-  deploy: string
-  policy: JSX.Element
-  severity: JSX.Element
-}
-
+  time: string;
+  cluster: string;
+  deploy: string;
+  policy: JSX.Element;
+  severity: JSX.Element;
+};
 
 export const RecentAlertsCard = () => {
   const configApi = useApi(configApiRef);
   const context = useContext(RhacsContext);
 
-  const [alerts, setAlerts] = useState<RefinedAlert[]>(
-    [],
-  );
+  const [alerts, setAlerts] = useState<RefinedAlert[]>([]);
 
   function refineData(data: RhacsAlert[]): RefinedAlert[] {
     return data.map(alert => {
@@ -80,10 +70,15 @@ export const RecentAlertsCard = () => {
         time: alert.time,
         cluster: alert.deployment.clusterName,
         deploy: alert.deployment.name,
-        policy: <Link to={`${context.centralEndpoint}/main/violations/${alert.id}`}> {alert.policy.name} </Link>,
+        policy: (
+          <Link to={`${context.centralEndpoint}/main/violations/${alert.id}`}>
+            {' '}
+            {alert.policy.name}{' '}
+          </Link>
+        ),
         severity: <StatusError> Critical </StatusError>,
-      }
-    })
+      };
+    });
   }
 
   const [{ loading, error }, refresh] = useAsyncFn(
@@ -109,7 +104,10 @@ export const RecentAlertsCard = () => {
 
   return (
     <Grid>
-      <Typography variant="h3"> Most recent violations with critical severity</Typography>
+      <Typography variant="h3">
+        {' '}
+        Most recent violations with critical severity
+      </Typography>
       <Table
         options={{ paging: false }}
         data={alerts}

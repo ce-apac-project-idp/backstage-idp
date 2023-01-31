@@ -1,32 +1,12 @@
-import React, { useContext } from "react";
-import {
-  Table,
-  TableColumn,
-  GaugeCard,
-  StatusOK,
-  SupportButton,
-  TrendLine,
-  Link,
-} from '@backstage/core-components';
-import {
-  Paper,
-  styled,
-  Card,
-  CardHeader,
-  CardContent,
-  Box,
-  Typography,
-  Chip, CircularProgress,
-} from '@material-ui/core';
+import React, { useContext } from 'react';
+import { Table, TableColumn } from '@backstage/core-components';
+import { Chip, CircularProgress } from '@material-ui/core';
 
-import { RhacsContext } from "./EntityRhacsContent";
-import { RhacsImage } from '../../helpers/types'
+import { RhacsContext } from './EntityRhacsContent';
+import { RhacsImage } from '../../helpers/types';
 
-function getRiskyComponents (components: RhacsImage.Component[] ) {
-  console.log('getRiskyComponents()', components.length)
-
-
-  return components.slice(0, 5)
+function getRiskyComponents(components: RhacsImage.Component[]) {
+  return components.slice(0, 5);
 }
 
 const columns: TableColumn[] = [
@@ -41,9 +21,9 @@ const columns: TableColumn[] = [
     render: (row: RhacsImage.Component) => {
       const count = row.vulns.length;
       if (count > 0) {
-        return <Chip label={`${count} CVE`} color="warning" />
+        return <Chip label={`${count} CVE`} color="warning" />;
       }
-      return <Chip label="No CVE" color="info" />
+      return <Chip label="No CVE" color="info" />;
     },
     width: '10%',
   },
@@ -62,11 +42,11 @@ export const RiskiestComponentsCard = () => {
         padding: 'dense',
         paging: false,
         filtering: false,
-        search: false
-    }}
-      data={ getRiskyComponents(image.scan.components) }
-      columns={ columns }
+        search: false,
+      }}
+      data={getRiskyComponents(image.scan.components)}
+      columns={columns}
       title="Top Riskiest Components"
     />
-  )
-}
+  );
+};

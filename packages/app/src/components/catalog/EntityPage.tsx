@@ -60,9 +60,7 @@ import {
   EntityTektonPipelinesContent,
   isTektonCiAvailable,
 } from '@jquad-group/plugin-tekton-pipelines';
-import {
-  EntityRhacsContent,
-} from '@internal/backstage-plugin-rhacs';
+import { EntityRhacsContent } from '@internal/backstage-plugin-rhacs';
 
 import resource from './resource';
 
@@ -202,7 +200,6 @@ const serviceEntityPage = (
     <EntityLayout.Route path="/rhacs" title="RHACS">
       <EntityRhacsContent refreshIntervalMs={30000} />
     </EntityLayout.Route>
-
   </EntityLayout>
 );
 

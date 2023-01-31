@@ -80,4 +80,3 @@ export namespace RhacsImage {
     topCvss: number;
   }
 }
-

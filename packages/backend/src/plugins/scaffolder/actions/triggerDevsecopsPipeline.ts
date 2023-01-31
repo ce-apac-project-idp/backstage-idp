@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { Logger } from 'winston';
-import { Config } from '@backstage/config';
 import { createTemplateAction } from '@backstage/plugin-scaffolder-backend';
 import { assertError } from '@backstage/errors';
 import {
@@ -10,77 +9,85 @@ import {
   PipelineRun,
 } from '../helpers/kubernetes';
 
-
 interface EventListenerResponse {
-  eventListener: string,
-  namespace: string,
-  eventListenerUID: string,
-  eventID: string,
+  eventListener: string;
+  namespace: string;
+  eventListenerUID: string;
+  eventID: string;
 }
 
 type TaskResult = {
   name: string;
   type: string;
   value: string;
-}
-
+};
 
 async function waitForPipelinerunStart(eventID: string) {
   return new Promise((resolve, reject) => {
     let n = 0;
     const intervalId = setInterval(async () => {
-      const pipelinerun = await findPipelineRunByEventId(eventID) as PipelineRun
+      const pipelinerun = (await findPipelineRunByEventId(
+        eventID,
+      )) as PipelineRun;
 
       if (pipelinerun) {
         clearInterval(intervalId);
-        return resolve(pipelinerun)
+        return resolve(pipelinerun);
       }
 
       // 10 sec
       if (++n === 10) {
         clearInterval(intervalId);
-        reject(`pipelinerun has not been created {eventID: ${eventID}}`)
+        return reject(`pipelinerun has not been created {eventID: ${eventID}}`);
       }
     }, 1000);
-  })
+  });
 }
 
-async function waitForPipelinerunFinish(namespace: string, name: string, logger: Logger) {
+async function waitForPipelinerunFinish(namespace: string, name: string) {
   return new Promise((resolve, reject) => {
     let n = 0;
     const intervalId = setInterval(async () => {
-      const pipelinerunStatus = await getPipelineRunStatus(namespace, name) as PipelineRunStatus;
+      const pipelinerunStatus = (await getPipelineRunStatus(
+        namespace,
+        name,
+      )) as PipelineRunStatus;
       const conditions = pipelinerunStatus.conditions;
 
-      console.log('waitForPipelinerunFinish(), %o, ', conditions, n)
-      logger.debug(`Waiting for pipelinerun to finish [${conditions[0].reason}] ${conditions[0].message}`);
-
       const successes = conditions.filter(condition => {
-        return condition.reason === 'Succeeded' || condition.reason === 'Completed'
-      })
+        return (
+          condition.reason === 'Succeeded' || condition.reason === 'Completed'
+        );
+      });
 
       const fails = conditions.filter(condition => {
-        return condition.status === 'False'
-      })
+        return condition.status === 'False';
+      });
 
       if (successes.length > 0) {
         clearInterval(intervalId);
-        return resolve(pipelinerunStatus)
+        return resolve(pipelinerunStatus);
       }
 
       if (fails.length > 0) {
         clearInterval(intervalId);
-        return reject(`pipelinerun failed with error. ${JSON.stringify(conditions)}`)
+        return reject(
+          `pipelinerun failed with error. ${JSON.stringify(conditions)}`,
+        );
       }
 
       // TODO: Not to wait in UI
       // 10 min
       if (++n === 120) {
         clearInterval(intervalId);
-        reject(`pipelinerun takes too long. {conditions: ${JSON.stringify(conditions)}`)
+        return reject(
+          `pipelinerun takes too long. {conditions: ${JSON.stringify(
+            conditions,
+          )}`,
+        );
       }
     }, 5000);
-  })
+  });
 }
 
 export const triggerDevsecopsPipelineAction = () => {
@@ -125,26 +132,27 @@ export const triggerDevsecopsPipelineAction = () => {
           imageReference: {
             type: 'string',
             title: 'Image Reference',
-            description: 'Image registry url for the developer\'s app image',
+            description: "Image registry url for the developer's app image",
           },
           imageDigest: {
             type: 'string',
             title: 'Image Digest',
-            description: 'Image digest (SHA) of the developer\'s app image',
-          }
-        }
-      }
+            description: "Image digest (SHA) of the developer's app image",
+          },
+        },
+      },
     },
     async handler(ctx) {
       try {
         ctx.logger.info(`Calling build pipeline`);
-        let pipelineEndpoint = ''
+        let pipelineEndpoint = '';
 
         // TODO: update eventlistener name and its route
         if (process.env.NODE_ENV === 'development') {
-          pipelineEndpoint = `http://ryu-test-backstage.${process.env.OPENSHIFT_BASE_DOMAIN}`
+          pipelineEndpoint = `http://ryu-test-backstage.${process.env.OPENSHIFT_BASE_DOMAIN}`;
         } else {
-          pipelineEndpoint = 'http://el-backstage-cr.tekton.svc.cluster.local:8080'
+          pipelineEndpoint =
+            'http://el-backstage-cr.tekton.svc.cluster.local:8080';
         }
 
         const data = {
@@ -154,16 +162,19 @@ export const triggerDevsecopsPipelineAction = () => {
           developerName: ctx.input.developerName,
         };
 
-        /*
-
         // 1. Trigger through eventlistener
         // TODO: reuse if there is pipelinerun from same user/app
-        const response = await axios.post(pipelineEndpoint, JSON.stringify(data));
+        const response = await axios.post(
+          pipelineEndpoint,
+          JSON.stringify(data),
+        );
 
         if (response.status === 202) {
           ctx.logger.info(`Pipeline build started successfully.`);
         } else {
-          ctx.logger.info(`Pipeline build could not be triggered. Check if the tasks are being referenced properly`);
+          ctx.logger.info(
+            `Pipeline build could not be triggered. Check if the tasks are being referenced properly`,
+          );
         }
 
         // 2. Get pipelinerun resource
@@ -172,7 +183,10 @@ export const triggerDevsecopsPipelineAction = () => {
         ctx.logger.info(`PipelineRun (${metadata.name}) is in progress.`);
 
         // 3. Wait for pipelinerun
-        const pipelinerunStatus = await waitForPipelinerunFinish(metadata.namespace, metadata.name, ctx.logger);
+        const pipelinerunStatus = await waitForPipelinerunFinish(
+          metadata.namespace,
+          metadata.name,
+        );
 
         if (pipelinerunStatus) {
           ctx.logger.info(`Pipeline has been completed`);
@@ -180,41 +194,42 @@ export const triggerDevsecopsPipelineAction = () => {
 
         // 4. Extract the image reference and its sha
         //    Refer the pipeline tasks in `opt-gitops-services`
-        const buildTask = pipelinerunStatus.taskRuns[`${metadata.name}-build-push-image`]
+        const buildTask =
+          pipelinerunStatus.taskRuns[`${metadata.name}-build-push-image`];
 
         if (!buildTask) {
-          ctx.logger.error('Pipeline finished but could not fetch task info.')
+          ctx.logger.error('Pipeline finished but could not fetch task info.');
           return;
         }
 
-        const [ imageReference, imageSha ] = buildTask.status.taskResults?.map(result => {
-          let value = (result as TaskResult).value;
-          return value.replace(/\n$/, '')
-        })
+        const [imageReference, imageSha] = buildTask.status.taskResults?.map(
+          result => {
+            const value = (result as TaskResult).value;
+            return value.replace(/\n$/, '');
+          },
+        );
 
         if (!imageReference || !imageSha) {
           ctx.logger.error('Could not find Image Reference or Image Sha');
           return;
         }
 
-        ctx.logger.info(`Tagged built image with SHA: ${imageSha}`)
-        ctx.output('imageReference', imageReference)
-        ctx.output('imageSha', imageSha)
+        ctx.logger.info(`Tagged built image with SHA: ${imageSha}`);
+        ctx.output('imageReference', imageReference);
+        ctx.output('imageSha', imageSha);
 
-        */
-
+        // TODO: make it to use backend baseurl from
         const rhacsResponse = await axios.post(
           `http://127.0.0.1:7007/api/rhacs/v1/imagecontext`,
           {
-            // imageReference: imageReference,
-            // imageSha: imageSha,
-            imageReference: 'quay.io/idp_org/ryu-my-react:test',
-            imageSha: 'sha256:ec9ab722b1ebf2d6d383d99e38731d06df65982203299e5a371adaf9b7ba1ab3',
-          }
+            imageReference: imageReference,
+            imageSha: imageSha,
+          },
         );
 
-        console.log(rhacsResponse.status, rhacsResponse.data)
-
+        ctx.logger.info(
+          `Pipeline result successfully sen. { status: ${rhacsResponse.status}, image: ${rhacsResponse.data}`,
+        );
       } catch (e) {
         assertError(e);
 

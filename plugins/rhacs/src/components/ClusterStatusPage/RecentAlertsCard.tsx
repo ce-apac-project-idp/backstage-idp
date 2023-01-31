@@ -1,3 +1,5 @@
+import useAsyncFn from 'react-use/lib/useAsyncFn';
+import useDebounce from 'react-use/lib/useDebounce';
 import React, { useContext, useState } from 'react';
 import {
   WarningPanel,
@@ -11,12 +13,9 @@ import {
   Typography,
   CircularProgress,
 } from '@material-ui/core';
-import useAsyncFn from 'react-use/lib/useAsyncFn';
-import useDebounce from 'react-use/lib/useDebounce';
+import { configApiRef, useApi } from '@backstage/core-plugin-api';
 
 import { RhacsAlert, getRecentAlerts } from '../../helpers/requests';
-
-import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { RhacsContext } from './ClusterStatusPage';
 
 const columns: TableColumn[] = [

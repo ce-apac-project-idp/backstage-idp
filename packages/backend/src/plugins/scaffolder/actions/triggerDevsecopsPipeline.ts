@@ -18,6 +18,13 @@ interface EventListenerResponse {
   eventID: string,
 }
 
+type TaskResult = {
+  name: string;
+  type: string;
+  value: string;
+}
+
+
 async function waitForPipelinerunStart(eventID: string) {
   return new Promise((resolve, reject) => {
     let n = 0;
@@ -147,6 +154,7 @@ export const triggerDevsecopsPipelineAction = () => {
           developerName: ctx.input.developerName,
         };
 
+        /*
 
         // 1. Trigger through eventlistener
         // TODO: reuse if there is pipelinerun from same user/app
@@ -171,29 +179,41 @@ export const triggerDevsecopsPipelineAction = () => {
         }
 
         // 4. Extract the image reference and its sha
+        //    Refer the pipeline tasks in `opt-gitops-services`
         const buildTask = pipelinerunStatus.taskRuns[`${metadata.name}-build-push-image`]
 
         if (!buildTask) {
-          ctx.logger.warn('Pipeline finished but could not fetch task info.')
-          return
+          ctx.logger.error('Pipeline finished but could not fetch task info.')
+          return;
         }
 
-        const imageSHA = buildTask.status.taskResults?.find(result => result.name === 'sha').value;
+        const [ imageReference, imageSha ] = buildTask.status.taskResults?.map(result => {
+          let value = (result as TaskResult).value;
+          return value.replace(/\n$/, '')
+        })
 
-        if (!imageSHA) {
-          ctx.logger.warn('Could not find Image SHA')
+        if (!imageReference || !imageSha) {
+          ctx.logger.error('Could not find Image Reference or Image Sha');
+          return;
         }
 
-        ctx.logger.info(`Pipeline results: ${JSON.stringify(buildTask.status)}`)
-        ctx.logger.info(`Tagged built image with SHA: ${imageSHA}`)
-        ctx.output('imageReference', imageSHA)
+        ctx.logger.info(`Tagged built image with SHA: ${imageSha}`)
+        ctx.output('imageReference', imageReference)
+        ctx.output('imageSha', imageSha)
 
-        const rhacsReponse = await axios.post(
-          `/api/rhacs/v1/images`,
-          { imageReference: buildTask.status.taskResults }
+        */
+
+        const rhacsResponse = await axios.post(
+          `http://127.0.0.1:7007/api/rhacs/v1/imagecontext`,
+          {
+            // imageReference: imageReference,
+            // imageSha: imageSha,
+            imageReference: 'quay.io/idp_org/ryu-my-react:test',
+            imageSha: 'sha256:ec9ab722b1ebf2d6d383d99e38731d06df65982203299e5a371adaf9b7ba1ab3',
+          }
         );
 
-        console.log(rhacsReponse)
+        console.log(rhacsResponse.status, rhacsResponse.data)
 
       } catch (e) {
         assertError(e);

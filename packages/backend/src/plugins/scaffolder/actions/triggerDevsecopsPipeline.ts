@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { Logger } from 'winston';
 import { createTemplateAction } from '@backstage/plugin-scaffolder-backend';
 import { assertError } from '@backstage/errors';
 import {

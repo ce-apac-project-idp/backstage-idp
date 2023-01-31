@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useState, useMemo } from 'react';
+import React, { createContext, useState, useMemo } from 'react';
 import { Page, Content } from '@backstage/core-components';
 import { Grid } from '@material-ui/core';
 

@@ -37,7 +37,7 @@ export interface PipelineRun {
 const kubeConfig = new k8s.KubeConfig();
 kubeConfig.loadFromDefault();
 
-const kubeCoreApi = kubeConfig.makeApiClient(k8s.CoreV1Api);
+// const kubeCoreApi = kubeConfig.makeApiClient(k8s.CoreV1Api);
 const kubeCRDApi = kubeConfig.makeApiClient(k8s.CustomObjectsApi);
 
 function kubeErrorHandler(err: unknown) {

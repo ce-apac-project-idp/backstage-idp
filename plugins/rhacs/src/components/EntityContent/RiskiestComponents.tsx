@@ -21,9 +21,9 @@ const columns: TableColumn[] = [
     render: (row: RhacsImage.Component) => {
       const count = row.vulns.length;
       if (count > 0) {
-        return <Chip label={`${count} CVE`} color="warning" />;
+        return <Chip label={`${count} CVE`} color="secondary" />;
       }
-      return <Chip label="No CVE" color="info" />;
+      return <Chip label="No CVE" color="default" variant="outlined" />;
     },
     width: '10%',
   },

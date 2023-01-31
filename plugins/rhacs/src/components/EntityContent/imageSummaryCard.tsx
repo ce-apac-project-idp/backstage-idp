@@ -10,7 +10,7 @@ import {
 
 import { RhacsContext } from './EntityRhacsContent';
 
-export function ImageSummaryCard(props) {
+export function ImageSummaryCard() {
   const context = useContext(RhacsContext);
   const image = context.image;
 

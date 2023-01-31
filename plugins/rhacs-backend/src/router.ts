@@ -63,7 +63,7 @@ export async function createRouter(
   /**
    * image-specific
    */
-  router.get('/v1/imagecontext', (request, response) => {
+  router.get('/v1/imagecontext', ({}, response) => {
     /*
      * TODO:
      * This at the moment manages only one `image` for the developer repo catalog

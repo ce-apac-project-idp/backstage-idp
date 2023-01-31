@@ -198,7 +198,7 @@ const serviceEntityPage = (
     </EntityLayout.Route>
 
     <EntityLayout.Route path="/rhacs" title="RHACS">
-      <EntityRhacsContent refreshIntervalMs={30000} />
+      <EntityRhacsContent />
     </EntityLayout.Route>
   </EntityLayout>
 );

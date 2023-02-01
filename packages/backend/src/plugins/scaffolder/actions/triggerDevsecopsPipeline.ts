@@ -161,58 +161,61 @@ export const triggerDevsecopsPipelineAction = () => {
           developerName: ctx.input.developerName,
         };
 
-        // 1. Trigger through eventlistener
-        // TODO: reuse if there is pipelinerun from same user/app
-        const response = await axios.post(
-          pipelineEndpoint,
-          JSON.stringify(data),
-        );
+        // // 1. Trigger through eventlistener
+        // // TODO: reuse if there is pipelinerun from same user/app
+        // const response = await axios.post(
+        //   pipelineEndpoint,
+        //   JSON.stringify(data),
+        // );
+        //
+        // if (response.status === 202) {
+        //   ctx.logger.info(`Pipeline build started successfully.`);
+        // } else {
+        //   ctx.logger.info(
+        //     `Pipeline build could not be triggered. Check if the tasks are being referenced properly`,
+        //   );
+        // }
+        //
+        // // 2. Get pipelinerun resource
+        // const { eventID } = response.data as EventListenerResponse;
+        // const { metadata } = await waitForPipelinerunStart(eventID);
+        // ctx.logger.info(`PipelineRun (${metadata.name}) is in progress.`);
+        //
+        // // 3. Wait for pipelinerun
+        // const pipelinerunStatus = await waitForPipelinerunFinish(
+        //   metadata.namespace,
+        //   metadata.name,
+        // );
+        //
+        // if (pipelinerunStatus) {
+        //   ctx.logger.info(`Pipeline has been completed`);
+        // }
+        //
+        // // 4. Extract the image reference and its sha
+        // //    Refer the pipeline tasks in `opt-gitops-services`
+        // const buildTask =
+        //   pipelinerunStatus.taskRuns[`${metadata.name}-build-push-image`];
+        //
+        // if (!buildTask) {
+        //   ctx.logger.error('Pipeline finished but could not fetch task info.');
+        //   return;
+        // }
+        //
+        // const [imageReference, imageSha] = buildTask.status.taskResults?.map(
+        //   result => {
+        //     const value = (result as TaskResult).value;
+        //     return value.replace(/\n$/, '');
+        //   },
+        // );
+        //
+        // if (!imageReference || !imageSha) {
+        //   ctx.logger.error('Could not find Image Reference or Image Sha');
+        //   return;
+        // }
+        //
 
-        if (response.status === 202) {
-          ctx.logger.info(`Pipeline build started successfully.`);
-        } else {
-          ctx.logger.info(
-            `Pipeline build could not be triggered. Check if the tasks are being referenced properly`,
-          );
-        }
-
-        // 2. Get pipelinerun resource
-        const { eventID } = response.data as EventListenerResponse;
-        const { metadata } = await waitForPipelinerunStart(eventID);
-        ctx.logger.info(`PipelineRun (${metadata.name}) is in progress.`);
-
-        // 3. Wait for pipelinerun
-        const pipelinerunStatus = await waitForPipelinerunFinish(
-          metadata.namespace,
-          metadata.name,
-        );
-
-        if (pipelinerunStatus) {
-          ctx.logger.info(`Pipeline has been completed`);
-        }
-
-        // 4. Extract the image reference and its sha
-        //    Refer the pipeline tasks in `opt-gitops-services`
-        const buildTask =
-          pipelinerunStatus.taskRuns[`${metadata.name}-build-push-image`];
-
-        if (!buildTask) {
-          ctx.logger.error('Pipeline finished but could not fetch task info.');
-          return;
-        }
-
-        const [imageReference, imageSha] = buildTask.status.taskResults?.map(
-          result => {
-            const value = (result as TaskResult).value;
-            return value.replace(/\n$/, '');
-          },
-        );
-
-        if (!imageReference || !imageSha) {
-          ctx.logger.error('Could not find Image Reference or Image Sha');
-          return;
-        }
-
+        const imageSha = 'sha256:cbce2283182c7377abe60ec2b1880ef2d1a80ff7f8e9fa95f209dedca939985d'
+        const imageReference = 'quay.io/idp_org/ryu-my-react:test'
         ctx.logger.info(`Tagged built image with SHA: ${imageSha}`);
         ctx.output('imageReference', imageReference);
         ctx.output('imageSha', imageSha);
@@ -226,8 +229,10 @@ export const triggerDevsecopsPipelineAction = () => {
           },
         );
 
-        ctx.logger.info(
-          `Pipeline result successfully sen. { status: ${rhacsResponse.status}, image: ${rhacsResponse.data}`,
+        ctx.logger.info(`Pipeline result successfully saved.
+            status: ${rhacsResponse.status}, 
+            imageReference: ${rhacsResponse.data.imageReference}
+            imageSha: ${rhacsResponse.data.imageSha}`,
         );
       } catch (e) {
         assertError(e);

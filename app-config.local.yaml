@@ -59,16 +59,13 @@ kubernetes:
           serviceAccountToken: ${KUBE_SERVICE_ACCOUNT_TOKEN}
           dashboardUrl: https://console-openshift-console.${OPENSHIFT_BASE_DOMAIN}
           dashboardApp: openshift
-  customResources:
-    - group: 'apac.catalyst.project.idp'
-      apiVersion: 'v1alpha1'
-      plural: 'postgresql'
-    - group: 'route.openshift.io'
-      apiVersion: 'v1'
-      plural: 'routes'
-    - group: 'cluster.open-cluster-management.io'
-      apiVersion: 'v1'
-      plural: 'managedclusters'
+          customResources:
+            - group: 'route.openshift.io'
+              apiVersion: 'v1'
+              plural: 'routes'
+            - group: 'cluster.open-cluster-management.io'
+              apiVersion: 'v1'
+              plural: 'managedclusters'
 
 rhacm:
   hub: ${RHACM_HUB_CLUSTER}
@@ -108,7 +105,3 @@ catalog:
       target: https://github.com/ce-apac-project-idp/backstage-idp-catalog/blob/main/all.yaml
       rules:
         - allow: [Group, Template, User]
-    - type: file
-      target: ../../examples/tekton.yaml
-      rules:
-        - allow: [ Template ]

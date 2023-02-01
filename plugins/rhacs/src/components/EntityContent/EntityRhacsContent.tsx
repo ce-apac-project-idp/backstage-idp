@@ -67,15 +67,15 @@ export const EntityRhacsContent = () => {
               <QuickLinksCards />
             </Grid>
 
-            <Grid item xs={6}>
+            <Grid item xs={5}>
               <ImageSummaryCard />
             </Grid>
 
-            <Grid item xs={6}>
+            <Grid item xs={3}>
               <ImageScoreCard />
             </Grid>
 
-            <Grid item>
+            <Grid item xs={4}>
               <RiskiestComponentsCard />
             </Grid>
           </Grid>

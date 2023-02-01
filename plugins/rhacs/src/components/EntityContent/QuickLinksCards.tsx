@@ -13,7 +13,7 @@ export const QuickLinksCards = () => {
           to={`${context.centralEndpoint}/main/vulnerability-management/image/${context.imageSha}`}
         >
           <CardMedia>
-            <ItemCardHeader title="RHACS Image Report >" />
+            <ItemCardHeader title="Open RHACS Image Report >" />
           </CardMedia>
         </Link>
       </Card>

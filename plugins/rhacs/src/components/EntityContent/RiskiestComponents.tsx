@@ -12,14 +12,18 @@ function getRiskyComponents(components: RhacsImage.Component[]) {
 const columns: TableColumn[] = [
   {
     title: 'Name',
-    render: (row: RhacsImage.Component) => `${row.name}:${row.version}`,
+    render: row => {
+      return `${(row as RhacsImage.Component).name}:${
+        (row as RhacsImage.Component).version
+      }`;
+    },
     highlight: true,
     width: '80px',
   },
   {
     title: 'Vulnerability Count',
-    render: (row: RhacsImage.Component) => {
-      const count = row.vulns.length;
+    render: row => {
+      const count = (row as RhacsImage.Component).vulns.length;
       if (count > 0) {
         return <Chip label={`${count} CVE`} color="secondary" />;
       }

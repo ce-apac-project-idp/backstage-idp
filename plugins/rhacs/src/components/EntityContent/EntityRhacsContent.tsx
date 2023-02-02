@@ -33,7 +33,14 @@ export const EntityRhacsContent = () => {
     imageOwner: string;
     imageName: string;
     image: RhacsImage.RootObject;
-  }>({});
+  }>({
+    centralEndpoint: '',
+    imageReference: '',
+    imageSha: '',
+    imageOwner: '',
+    imageName: '',
+    image: {} as RhacsImage.RootObject,
+  });
 
   useMemo(() => {
     (async () => {

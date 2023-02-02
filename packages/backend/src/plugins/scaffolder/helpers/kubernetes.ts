@@ -6,6 +6,12 @@ type KubernetesResponse = {
   body: any;
 };
 
+export type TaskResult = {
+  name: string;
+  type: string;
+  value: string;
+};
+
 // ref: https://tekton.dev/docs/pipelines/pipelineruns/#pipelinerun-status
 export interface PipelineRunStatus {
   conditions: Array<{
@@ -23,6 +29,13 @@ export interface PipelineRunStatus {
         taskResults?: string[];
       };
     }>;
+  };
+  taskRuns: {
+    [key: string]: {
+      status: {
+        taskResults: TaskResult[];
+      };
+    };
   };
 }
 

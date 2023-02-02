@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { loadBackendConfig, getRootLogger } from '@backstage/backend-common';
 import { createTemplateAction } from '@backstage/plugin-scaffolder-backend';
 import { assertError } from '@backstage/errors';
 import {
@@ -15,15 +16,22 @@ interface EventListenerResponse {
   eventID: string;
 }
 
-type TaskResult = {
-  name: string;
-  type: string;
-  value: string;
-};
+let backendUrl = '';
+
+(async function loadBackendUrl() {
+  const config = await loadBackendConfig({
+    argv: process.argv,
+    logger: getRootLogger(),
+  });
+
+  backendUrl = config.getString('backend.baseUrl');
+})();
 
 async function waitForPipelinerunStart(eventID: string) {
   return new Promise((resolve, reject) => {
     let n = 0;
+
+    // eslint-disable-next-line
     const intervalId = setInterval(async () => {
       const pipelinerun = (await findPipelineRunByEventId(
         eventID,
@@ -40,12 +48,14 @@ async function waitForPipelinerunStart(eventID: string) {
         return reject(`pipelinerun has not been created {eventID: ${eventID}}`);
       }
     }, 1000);
-  });
+  }) as Promise<PipelineRun>;
 }
 
 async function waitForPipelinerunFinish(namespace: string, name: string) {
   return new Promise((resolve, reject) => {
     let n = 0;
+
+    // eslint-disable-next-line
     const intervalId = setInterval(async () => {
       const pipelinerunStatus = (await getPipelineRunStatus(
         namespace,
@@ -86,7 +96,7 @@ async function waitForPipelinerunFinish(namespace: string, name: string) {
         );
       }
     }, 5000);
-  });
+  }) as Promise<PipelineRunStatus>;
 }
 
 export const triggerDevsecopsPipelineAction = () => {
@@ -161,68 +171,68 @@ export const triggerDevsecopsPipelineAction = () => {
           developerName: ctx.input.developerName,
         };
 
-        // // 1. Trigger through eventlistener
-        // // TODO: reuse if there is pipelinerun from same user/app
-        // const response = await axios.post(
-        //   pipelineEndpoint,
-        //   JSON.stringify(data),
-        // );
-        //
-        // if (response.status === 202) {
-        //   ctx.logger.info(`Pipeline build started successfully.`);
-        // } else {
-        //   ctx.logger.info(
-        //     `Pipeline build could not be triggered. Check if the tasks are being referenced properly`,
-        //   );
-        // }
-        //
-        // // 2. Get pipelinerun resource
-        // const { eventID } = response.data as EventListenerResponse;
-        // const { metadata } = await waitForPipelinerunStart(eventID);
-        // ctx.logger.info(`PipelineRun (${metadata.name}) is in progress.`);
-        //
-        // // 3. Wait for pipelinerun
-        // const pipelinerunStatus = await waitForPipelinerunFinish(
-        //   metadata.namespace,
-        //   metadata.name,
-        // );
-        //
-        // if (pipelinerunStatus) {
-        //   ctx.logger.info(`Pipeline has been completed`);
-        // }
-        //
-        // // 4. Extract the image reference and its sha
-        // //    Refer the pipeline tasks in `opt-gitops-services`
-        // const buildTask =
-        //   pipelinerunStatus.taskRuns[`${metadata.name}-build-push-image`];
-        //
-        // if (!buildTask) {
-        //   ctx.logger.error('Pipeline finished but could not fetch task info.');
-        //   return;
-        // }
-        //
-        // const [imageReference, imageSha] = buildTask.status.taskResults?.map(
-        //   result => {
-        //     const value = (result as TaskResult).value;
-        //     return value.replace(/\n$/, '');
-        //   },
-        // );
-        //
-        // if (!imageReference || !imageSha) {
-        //   ctx.logger.error('Could not find Image Reference or Image Sha');
-        //   return;
-        // }
-        //
+        // 1. Trigger through eventlistener
+        // TODO: reuse if there is pipelinerun from same user/app
+        const response = await axios.post(
+          pipelineEndpoint,
+          JSON.stringify(data),
+        );
 
-        const imageSha = 'sha256:cbce2283182c7377abe60ec2b1880ef2d1a80ff7f8e9fa95f209dedca939985d'
-        const imageReference = 'quay.io/idp_org/ryu-my-react:test'
+        if (response.status === 202) {
+          ctx.logger.info(`Pipeline build started successfully.`);
+        } else {
+          ctx.logger.info(
+            `Pipeline build could not be triggered. Check if the tasks are being referenced properly`,
+          );
+        }
+
+        // 2. Get pipelinerun resource
+        const { eventID } = response.data as EventListenerResponse;
+        const { metadata } = await waitForPipelinerunStart(eventID);
+        ctx.logger.info(`PipelineRun (${metadata.name}) is in progress.`);
+
+        // 3. Wait for pipelinerun
+        const pipelinerunStatus = await waitForPipelinerunFinish(
+          metadata.namespace,
+          metadata.name,
+        );
+
+        if (pipelinerunStatus) {
+          ctx.logger.info(`Pipeline has been completed`);
+        }
+
+        // 4. Extract the image reference and its sha
+        //    Refer the pipeline tasks in `opt-gitops-services`
+        const buildTask =
+          pipelinerunStatus.taskRuns[`${metadata.name}-build-push-image`];
+
+        if (!buildTask) {
+          ctx.logger.error('Pipeline finished but could not fetch task info.');
+          return;
+        }
+
+        const [imageReference, imageSha] = buildTask.status.taskResults?.map(
+          result => {
+            const value = result.value;
+            return value.replace(/\n$/, '');
+          },
+        );
+
+        if (!imageReference || !imageSha) {
+          ctx.logger.error('Could not find Image Reference or Image Sha');
+          return;
+        }
+
         ctx.logger.info(`Tagged built image with SHA: ${imageSha}`);
         ctx.output('imageReference', imageReference);
         ctx.output('imageSha', imageSha);
 
-        // TODO: make it to use backend baseurl from
+        if (!backendUrl) {
+          throw new Error('Backend URL has not been loaded. Try again.');
+        }
+
         const rhacsResponse = await axios.post(
-          `http://127.0.0.1:7007/api/rhacs/v1/imagecontext`,
+          `${backendUrl}/api/rhacs/v1/imagecontext`,
           {
             imageReference: imageReference,
             imageSha: imageSha,
@@ -232,8 +242,7 @@ export const triggerDevsecopsPipelineAction = () => {
         ctx.logger.info(`Pipeline result successfully saved.
             status: ${rhacsResponse.status}, 
             imageReference: ${rhacsResponse.data.imageReference}
-            imageSha: ${rhacsResponse.data.imageSha}`,
-        );
+            imageSha: ${rhacsResponse.data.imageSha}`);
       } catch (e) {
         assertError(e);
 

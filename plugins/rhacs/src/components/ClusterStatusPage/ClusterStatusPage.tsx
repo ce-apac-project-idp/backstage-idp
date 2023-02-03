@@ -10,7 +10,7 @@ import {
 } from '@backstage/core-components';
 
 import { ViolationCountCards } from './ViolationCountCards';
-import { RecentAlertsCard } from './RecentAlertsCard'
+import { RecentAlertsCard } from './RecentAlertsCard';
 import { QuickLinksCards } from './QuickLinksCards';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { getCentralEndpoint } from '../../helpers/requests';

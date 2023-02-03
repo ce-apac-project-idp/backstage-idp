@@ -22,6 +22,9 @@ export async function createAxiosInstance(configApi: ConfigApi) {
   return axios.create(axiosConfig);
 }
 
+/**
+ * Cluster-wide
+ */
 export async function getViolationSummary(instance: AxiosInstance) {
   try {
     const response = await instance.request({
@@ -38,9 +41,9 @@ export async function getRecentAlerts(instance: AxiosInstance) {
     const response = await instance.request({
       url: '/api/graphql',
       params: {
-        opname: 'mostRecentAlerts'
+        opname: 'mostRecentAlerts',
       },
-      data: '{\n"operationName":"mostRecentAlerts",\n"variables":{"query":"Severity:CRITICAL_SEVERITY"},\n"query":"query mostRecentAlerts($query: String) {alerts: violations(query: $query pagination: {limit: 3, sortOption: {field: \\"Violation Time\\", reversed: true}}) {id time deployment {clusterName namespace name __typename } policy { name severity __typename}__typename}}"\n}'
+      data: '{\n"operationName":"mostRecentAlerts",\n"variables":{"query":"Severity:CRITICAL_SEVERITY"},\n"query":"query mostRecentAlerts($query: String) {alerts: violations(query: $query pagination: {limit: 3, sortOption: {field: \\"Violation Time\\", reversed: true}}) {id time deployment {clusterName namespace name __typename } policy { name severity __typename}__typename}}"\n}',
     });
 
     return response.data;
@@ -49,4 +52,17 @@ export async function getRecentAlerts(instance: AxiosInstance) {
   }
 }
 
+/**
+ * Image-specific
+ */
+export async function getImageReport(instance: AxiosInstance, sha: string) {
+  try {
+    const response = await instance.request({
+      url: `/v1/images/${sha}`,
+    });
 
+    return response.data;
+  } catch (err) {
+    throw err;
+  }
+}

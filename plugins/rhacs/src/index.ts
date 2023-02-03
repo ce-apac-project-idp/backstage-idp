@@ -1,1 +1,1 @@
-export { rhacsPlugin, RhacsPage } from './plugin';
+export { rhacsPlugin, RhacsPage, EntityRhacsContent } from './plugin';

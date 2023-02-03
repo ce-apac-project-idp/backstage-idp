@@ -106,9 +106,6 @@ kubernetes:
           dashboardUrl: https://console-openshift-console.${OPENSHIFT_BASE_DOMAIN}
           dashboardApp: openshift
   customResources:
-    - group: 'apac.catalyst.project.idp'
-      apiVersion: 'v1alpha1'
-      plural: 'postgresql'
     - group: 'route.openshift.io'
       apiVersion: 'v1'
       plural: 'routes'

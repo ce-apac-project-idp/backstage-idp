@@ -39,6 +39,7 @@
     "@internal/backstage-plugin-rhacm-backend": "*",
     "@internal/backstage-plugin-rhacs-backend": "*",
     "@jquad-group/plugin-tekton-pipelines-backend": "0.2.5",
+    "@kubernetes/client-node": "^0.18.1",
     "app": "link:../app",
     "axios": "^1.2.0",
     "better-sqlite3": "^7.5.0",

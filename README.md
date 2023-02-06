@@ -45,6 +45,10 @@ Backstage IDP comes with difference plugins for
 
 Follow the document [here](./docs/how-to-configure-plugins.md) to configure those Plugins. 
 
+## Monitoring Custom Resources
+
+The relevant information is documented [here](https://backstage.io/docs/features/kubernetes/configuration#customresources-optional). An example stanza can be found in the app-config.yaml file. There exists a cuto resources stanza under Kubernetes enabling one to monitor custom resources. For instance, routes. Since routes are not a native K8 object.
+
 
 ## Understand DevSecOps
 

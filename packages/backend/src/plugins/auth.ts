@@ -2,11 +2,13 @@ import {
   createRouter,
   providers,
   defaultAuthProviderFactories,
+  ProfileInfo,
 } from '@backstage/plugin-auth-backend';
 import { Router } from 'express';
 import { PluginEnvironment } from '../types';
 import {
   DEFAULT_NAMESPACE,
+  Entity,
   stringifyEntityRef,
 } from '@backstage/catalog-model';
 
@@ -53,21 +55,66 @@ export default async function createPlugin(
           // resolver: providers.github.resolvers.usernameMatchingUserEntityName(),
         },
       }),
-      /**
-       * TODO: move this to plugin
-       */
       'ibm-verify-oidc-provider': providers.oidc.create({
+        authHandler: async (oidcResult, ctx) => {
+          /**
+           * oidcResult {tokenset, userinfo}
+           */
+          const {
+            userinfo: { email, email_verified, displayName, groupIds, name },
+          } = oidcResult;
+
+          if (!email_verified) {
+            throw new Error(
+              'Email for IBM Verify is not verified. Please setup IBM Verify account first and try again.',
+            );
+          }
+
+          if (!email) {
+            throw new Error(
+              'User profile does not contain an email. Is scope set up properly?',
+            );
+          }
+
+          return {
+            profile: {
+              email: email as string,
+              displayName: displayName as string,
+              groupIds: groupIds as string[],
+              name: name as string,
+            } as ProfileInfo,
+          };
+        },
         signIn: {
           resolver(info, ctx) {
-            const userRef = stringifyEntityRef({
+            /**
+             * info {
+             *   result // info from IBM verify
+             *   profile // profile from authHandler to be used for frontend
+             * }
+             */
+            const {
+              result: { userinfo },
+            } = info;
+
+            const userEntity = stringifyEntityRef({
+              apiVersion: 'backstage.io/v1alpha1',
               kind: 'User',
-              name: info.result.userinfo.sub as string,
-              namespace: DEFAULT_NAMESPACE,
+              metadata: {
+                name: userinfo.sub as string,
+                namespace: DEFAULT_NAMESPACE,
+              },
+              spec: {
+                displayName: userinfo.displayName as string,
+                email: userinfo.email as string,
+                memberOf: userinfo.groupIds as string[],
+              },
             });
+
             return ctx.issueToken({
               claims: {
-                sub: userRef, // The user's identity
-                ent: [userRef], // A list of identities that the user claims ownership through
+                sub: userEntity, // The user's identity
+                ent: [userEntity], // A list of identities that the user claims ownership through
               },
             });
           },

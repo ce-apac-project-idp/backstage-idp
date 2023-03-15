@@ -29,6 +29,12 @@ backend:
     store: memory
   # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
   # workingDirectory: /tmp
+  auth:
+    keys:
+      - secret: ${BACKEND_SECRET}
+
+permission:
+  enabled: true
 
 # See official README.md in the proxy-backend plugin for information on the configuration format
 proxy:

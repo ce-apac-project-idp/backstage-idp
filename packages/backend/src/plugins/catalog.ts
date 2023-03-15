@@ -1,15 +1,16 @@
 import { Entity, ResourceEntity } from '@backstage/catalog-model';
 import {
-  CatalogBuilder,
   CatalogProcessor,
   CatalogProcessorCache,
   CatalogProcessorEmit,
 } from '@backstage/plugin-catalog-backend';
+import { CatalogBuilder } from '@backstage/plugin-catalog-backend/alpha';
 import { LocationSpec } from '@backstage/plugin-catalog-common';
 import { ScaffolderEntitiesProcessor } from '@backstage/plugin-scaffolder-backend';
 import { ManagedClusterProvider } from '@internal/backstage-plugin-rhacm-backend';
 import { Router } from 'express';
 import { PluginEnvironment } from '../types';
+import { isInSystemRule } from './permissionRules';
 
 class OpenshiftResourceProcessor implements CatalogProcessor {
   getProcessorName(): string {
@@ -51,6 +52,7 @@ export default async function createPlugin(
   builder.addProcessor(new ScaffolderEntitiesProcessor());
   builder.addEntityProvider(rhacm);
   builder.addProcessor(new OpenshiftResourceProcessor());
+  builder.addPermissionRules(isInSystemRule);
 
   const { processingEngine, router } = await builder.build();
   await processingEngine.start();

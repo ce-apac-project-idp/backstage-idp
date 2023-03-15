@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { loadBackendConfig, getRootLogger } from '@backstage/backend-common';
-import { createTemplateAction } from '@backstage/plugin-scaffolder-backend';
+import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import { assertError } from '@backstage/errors';
 import {
   findPipelineRunByEventId,

@@ -1,0 +1,34 @@
+kind: BuildConfig
+apiVersion: build.openshift.io/v1
+metadata:
+  name: backstage-build
+  annotations:
+    todo: "change image tag and buildconfig name"
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: 'backstage:latest'
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        namespace: openshift
+        name: 'nodejs:18-rhel8'
+  source:
+    type: Git
+    git:
+      uri: 'git@github.com:ce-apac-project-idp/backstage-idp.git'
+      ref: dev
+    sourceSecret:
+      name: buildconfig-source-secret
+    configMaps:
+      - configMap:
+          name: backstage-config
+  triggers:
+    - type: ConfigChange
+    - type: GitHub
+      github:
+        secretReference:
+          name: buildconfig-webhook-secret

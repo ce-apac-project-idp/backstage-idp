@@ -2,7 +2,6 @@ kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
   name: backstage
-  namespace: backstage
 spec:
   subdomain: backstage
   to:

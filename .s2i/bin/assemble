@@ -1,0 +1,63 @@
+#!/bin/bash
+
+##
+## Based on Janus IDP's source-to-image
+## https://github.com/janus-idp/redhat-backstage-build/blob/main/.s2i/bin/assemble
+## With generation of app-config.prod.yaml
+##
+
+echo "---> Adding yarn to the image"
+npm install -g yarn
+
+set -e
+
+shopt -s dotglob
+if [ -d /tmp/artifacts ] && [ "$(ls /tmp/artifacts/ 2>/dev/null)" ]; then
+    echo "---> Restoring previous build artifacts ..."
+    mv -T --verbose /tmp/artifacts/node_modules "${HOME}/node_modules"
+fi
+
+echo "---> Installing application source ..."
+mv /tmp/src/* ./
+
+# Fix source directory permissions
+fix-permissions ./
+
+echo "---> Generating app-config.prod.yaml"
+if [[ ! -f ".env" ]]; then
+  echo "Failed: .env not found. Please add .env as configmap to BuildConfig"
+  exit 1
+fi
+
+command -v envsubst > /dev/null
+if [[ $? != 0 ]]; then
+  echo "Failed: envsubst required. Please use RHEL base image for builder image. e.g) rhel8/nodejs"
+  exit 1
+fi
+
+
+# Backstage needs production 'app-config.yaml' and any required envvar at build time
+rm app-config.local.yaml
+(export $(grep -v '^#' .env | xargs); envsubst < app-config.yaml > app-config.prod.yaml)
+mv app-config.prod.yaml app-config.yaml
+cat app-config.yaml
+
+echo "---> Building in production mode"
+yarn install --frozen-lockfile --network-timeout 300000
+yarn tsc
+yarn --cwd packages/backend build
+cp packages/backend/dist/skeleton.tar.gz ./
+tar xzf skeleton.tar.gz && rm skeleton.tar.gz
+
+echo "---> Clean up after build"
+yarn install --frozen-lockfile --production --network-timeout 300000
+rm -rf "$(yarn cache dir)"
+yarn cache clean
+rm -rf .cache
+
+echo "---> Copying build bundle"
+cp packages/backend/dist/bundle.tar.gz ./
+
+tar xzf bundle.tar.gz && rm bundle.tar.gz
+# Fix source directory permissions
+fix-permissions ./

@@ -1,5 +1,6 @@
 import {
   createRouter,
+  getDefaultOwnershipEntityRefs,
   providers,
   defaultAuthProviderFactories,
 } from '@backstage/plugin-auth-backend';
@@ -7,8 +8,9 @@ import { Router } from 'express';
 import { PluginEnvironment } from '../types';
 import {
   DEFAULT_NAMESPACE,
-  stringifyEntityRef
-} from "@backstage/catalog-model";
+  Entity,
+  stringifyEntityRef,
+} from '@backstage/catalog-model';
 
 export default async function createPlugin(
   env: PluginEnvironment,
@@ -53,26 +55,85 @@ export default async function createPlugin(
           // resolver: providers.github.resolvers.usernameMatchingUserEntityName(),
         },
       }),
-      /**
-       * TODO: move this to plugin
-       */
       'ibm-verify-oidc-provider': providers.oidc.create({
+        authHandler: async oidcResult => {
+          /**
+           * oidcResult {tokenset, userinfo}
+           */
+          const {
+            userinfo: { email, email_verified, displayName },
+          } = oidcResult;
+
+          if (!email_verified) {
+            throw new Error(
+              'Email for IBM Verify is not verified. Please setup IBM Verify account first and try again.',
+            );
+          }
+
+          if (!email) {
+            throw new Error(
+              'User profile does not contain an email. Is scope set up properly?',
+            );
+          }
+
+          return {
+            profile: {
+              email: email as string,
+              displayName: displayName as string,
+            },
+          };
+        },
         signIn: {
-          resolver(info, ctx) {
-            const userRef = stringifyEntityRef({
+          async resolver({ result, profile }, ctx) {
+            /**
+             * result // info from IBM verify
+             * profile // profile from authHandler to be used for frontend
+             */
+            const { userinfo } = result;
+
+            if (!profile.email) {
+              throw new Error(
+                'Login failed, user profile does not contain an email',
+              );
+            }
+
+            const userEntity = {
+              apiVersion: 'backstage.io/v1alpha1',
               kind: 'User',
-              name: info.result.userinfo.sub as string,
-              namespace: DEFAULT_NAMESPACE
-            });
+              metadata: {
+                name: profile.email,
+                namespace: DEFAULT_NAMESPACE,
+                annotations: {
+                  'ibm-verify/email': profile.email,
+                  'ibm-verify/name': userinfo.name,
+                  'ibm-verify/sub': userinfo.sub,
+                },
+              },
+              spec: {
+                profile,
+                memberOf: userinfo.groupIds as string[],
+              },
+              // explicit relations as this user entity won't be on Backstage
+              // TODO: dynamic relations according to groupIds
+              relations: [
+                {
+                  type: 'memberOf',
+                  targetRef: 'group:default/admin',
+                },
+              ],
+            } as Entity;
+
+            const ownershipRefs = getDefaultOwnershipEntityRefs(userEntity);
+
             return ctx.issueToken({
               claims: {
-                sub: userRef,    // The user's identity
-                ent: [ userRef ] // A list of identities that the user claims ownership through
-              }
-            })
-          }
-        }
-      })
+                sub: stringifyEntityRef(userEntity), // The user's identity
+                ent: ownershipRefs, // A list of identities that the user claims ownership through
+              },
+            });
+          },
+        },
+      }),
     },
   });
 }

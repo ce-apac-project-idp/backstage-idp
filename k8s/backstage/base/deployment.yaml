@@ -1,8 +1,7 @@
-apiVersion: apps/v1
 kind: Deployment
+apiVersion: apps/v1
 metadata:
   name: backstage
-  namespace: backstage
 spec:
   replicas: 1
   selector:
@@ -13,26 +12,16 @@ spec:
       labels:
         app: backstage
     spec:
-      volumes:
-        - name: app-config
-          configMap:
-            name: app-config
-            defaultMode: 420
       containers:
         - name: backstage
           ports:
             - name: http
               containerPort: 7007
               protocol: TCP
-          imagePullPolicy: IfNotPresent
-          volumeMounts:
-            - name: app-config
-              mountPath: /config/app-config.yaml
-              subPath: app-config.yaml
-          terminationMessagePolicy: File
+          imagePullPolicy: Always
           envFrom:
+            - configMapRef:
+                name: backstage-config
             - secretRef:
                 name: postgresql-secrets
-            - secretRef:
-                name: backstage-secrets-kube
-          image: image-registry.openshift-image-registry.svc:5000/backstage-dev/backstage:latest
+          image: image-registry.openshift-image-registry.svc:5000/backstage/backstage:latest

@@ -1,0 +1,54 @@
+{
+  "name": "@internal/backstage-plugin-rhacs",
+  "version": "0.0.1",
+  "description": "Backstage plugin for Red Hat Advanced Cluster Security",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "author": "Songhui Ryu",
+  "license": "MIT",
+  "private": true,
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.esm.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "frontend-plugin"
+  },
+  "scripts": {
+    "start": "backstage-cli package start",
+    "compile": "tsc",
+    "build": "backstage-cli package build",
+    "lint": "backstage-cli package lint",
+    "test": "backstage-cli package test",
+    "clean": "backstage-cli package clean",
+    "prepack": "backstage-cli package prepack",
+    "postpack": "backstage-cli package postpack"
+  },
+  "dependencies": {
+    "@backstage/core-app-api": "^1.6.0",
+    "@backstage/core-components": "^0.12.5",
+    "@backstage/core-plugin-api": "^1.5.0",
+    "@backstage/plugin-search-react": "^1.5.1",
+    "@material-ui/core": "^4.12.4",
+    "axios": "^1.2.2",
+    "react-use": "^17.4.0"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1 || ^17.0.0 || ^18.2.0"
+  },
+  "devDependencies": {
+    "@backstage/cli": "^0.22.4",
+    "@backstage/dev-utils": "^1.0.13",
+    "@backstage/test-utils": "^1.2.6",
+    "@testing-library/user-event": "^14.0.0",
+    "@types/node": "*",
+    "cross-fetch": "^3.1.5",
+    "msw": "^0.47.0"
+  },
+  "files": [
+    "dist",
+    "config.d.ts"
+  ],
+  "configSchema": "config.d.ts"
+}

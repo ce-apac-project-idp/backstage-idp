@@ -3,7 +3,7 @@
 apiVersion: backstage.io/v1alpha1
 kind: System
 metadata:
-  name: examples
+  name: example-system
 spec:
   owner: guests
 ---
@@ -16,7 +16,7 @@ spec:
   type: website
   lifecycle: experimental
   owner: guests
-  system: examples
+  system: example-system
   providesApis: [example-grpc-api]
 ---
 # https://backstage.io/docs/features/software-catalog/descriptor-format#kind-api
@@ -28,7 +28,7 @@ spec:
   type: grpc
   lifecycle: experimental
   owner: guests
-  system: examples
+  system: example-system
   definition: |
     syntax = "proto3";
 

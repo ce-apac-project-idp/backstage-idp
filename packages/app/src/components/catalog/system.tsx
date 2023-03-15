@@ -44,13 +44,13 @@ const system = (
             height={400}
           />
         </Grid>
-        {/* <EntitySwitch>*/ }
-        {/*   <EntitySwitch.Case if={isArgocdAvailable}>*/ }
-        {/*     <Grid item xs={12}>*/ }
-        {/*       <EntityArgoCDOverviewCard />*/ }
-        {/*     </Grid>*/ }
-        {/*   </EntitySwitch.Case>*/ }
-        {/* </EntitySwitch>*/ }
+        {/* <EntitySwitch>*/}
+        {/*   <EntitySwitch.Case if={isArgocdAvailable}>*/}
+        {/*     <Grid item xs={12}>*/}
+        {/*       <EntityArgoCDOverviewCard />*/}
+        {/*     </Grid>*/}
+        {/*   </EntitySwitch.Case>*/}
+        {/* </EntitySwitch>*/}
         <Grid item xs={12}>
           <EntityHasComponentsCard variant="gridItem" />
         </Grid>

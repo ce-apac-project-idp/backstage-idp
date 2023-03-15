@@ -56,7 +56,11 @@ import {
 import { TechDocsAddons } from '@backstage/plugin-techdocs-react';
 import { ReportIssue } from '@backstage/plugin-techdocs-module-addons-contrib';
 import { EntityKubernetesContent } from '@backstage/plugin-kubernetes';
-import { EntityTektonPipelinesContent, isTektonCiAvailable } from '@jquad-group/plugin-tekton-pipelines';
+import {
+  EntityTektonPipelinesContent,
+  isTektonCiAvailable,
+} from '@jquad-group/plugin-tekton-pipelines';
+import { EntityRhacsContent } from '@internal/backstage-plugin-rhacs';
 
 import resource from './resource';
 
@@ -169,13 +173,16 @@ const serviceEntityPage = (
     <EntityLayout.Route path="/docs" title="Docs">
       {techdocsContent}
     </EntityLayout.Route>
+
     <EntityLayout.Route path="/kubernetes" title="Kubernetes">
       <EntityKubernetesContent refreshIntervalMs={30000} />
     </EntityLayout.Route>
-    <EntityLayout.Route path="/tekton-pipelines-plugin" title="Tekton Pipelines">
-   
-      <EntitySwitch>
 
+    <EntityLayout.Route
+      path="/tekton-pipelines-plugin"
+      title="Tekton Pipelines"
+    >
+      <EntitySwitch>
         <EntitySwitch.Case if={e => Boolean(isTektonCiAvailable(e))}>
           <EntityTektonPipelinesContent />
         </EntitySwitch.Case>
@@ -187,9 +194,11 @@ const serviceEntityPage = (
             description="You need to add the annotation 'tektonci/build-namespace' to your component if you want to enable the Tekton Pipelines for it."
           />
         </EntitySwitch.Case>
-
       </EntitySwitch>
+    </EntityLayout.Route>
 
+    <EntityLayout.Route path="/rhacs" title="RHACS">
+      <EntityRhacsContent />
     </EntityLayout.Route>
   </EntityLayout>
 );

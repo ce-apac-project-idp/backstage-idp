@@ -29,17 +29,20 @@ import { Root } from './components/Root';
 
 import { AlertDisplay, OAuthRequestDialog } from '@backstage/core-components';
 import { createApp } from '@backstage/app-defaults';
-import { FlatRoutes } from '@backstage/core-app-api';
+import { AppComponents, FlatRoutes } from '@backstage/core-app-api';
 import { CatalogGraphPage } from '@backstage/plugin-catalog-graph';
 import { RequirePermission } from '@backstage/plugin-permission-react';
 import { catalogEntityCreatePermission } from '@backstage/plugin-catalog-common/alpha';
 
+import { badgesPlugin } from '@backstage/plugin-badges';
 import { SignInPage } from '@backstage/core-components';
 import { RhacmPage } from '@internal/backstage-plugin-rhacm';
+import { RhacsPage } from '@internal/backstage-plugin-rhacs';
 
-const app = createApp({
-  apis,
-  components: {
+const appComponent =
+  process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development'
+    ? {}
+    : ({
         SignInPage: props => (
           <SignInPage
             {...props}
@@ -49,10 +52,15 @@ const app = createApp({
               title: 'IBM Security Verify',
               message: 'Sign in using IBM Security Verify',
               apiRef: ibmOIDCAuthApiRef,
-           }}
-         />
-      ),
-     },
+            }}
+          />
+        ),
+      } as AppComponents);
+
+const app = createApp({
+  apis,
+  plugins: [badgesPlugin],
+  components: appComponent,
   bindRoutes({ bind }) {
     bind(catalogPlugin.externalRoutes, {
       createComponent: scaffolderPlugin.routes.root,
@@ -112,6 +120,7 @@ const routes = (
     <Route path="/settings" element={<UserSettingsPage />} />
     <Route path="/catalog-graph" element={<CatalogGraphPage />} />
     <Route path="/rhacm" element={<RhacmPage />} />
+    <Route path="/rhacs" element={<RhacsPage />} />
   </FlatRoutes>
 );
 

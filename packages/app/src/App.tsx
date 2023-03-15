@@ -40,7 +40,7 @@ import { RhacmPage } from '@internal/backstage-plugin-rhacm';
 import { RhacsPage } from '@internal/backstage-plugin-rhacs';
 
 const appComponent =
-  process.env.NODE_ENV === 'development'
+  process.env.NODE_ENV === 'test'
     ? {}
     : ({
         SignInPage: props =>

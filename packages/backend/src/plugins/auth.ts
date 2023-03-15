@@ -1,8 +1,8 @@
 import {
   createRouter,
+  getDefaultOwnershipEntityRefs,
   providers,
   defaultAuthProviderFactories,
-  ProfileInfo,
 } from '@backstage/plugin-auth-backend';
 import { Router } from 'express';
 import { PluginEnvironment } from '../types';
@@ -56,12 +56,12 @@ export default async function createPlugin(
         },
       }),
       'ibm-verify-oidc-provider': providers.oidc.create({
-        authHandler: async (oidcResult, ctx) => {
+        authHandler: async oidcResult => {
           /**
            * oidcResult {tokenset, userinfo}
            */
           const {
-            userinfo: { email, email_verified, displayName, groupIds, name },
+            userinfo: { email, email_verified, displayName },
           } = oidcResult;
 
           if (!email_verified) {
@@ -80,41 +80,55 @@ export default async function createPlugin(
             profile: {
               email: email as string,
               displayName: displayName as string,
-              groupIds: groupIds as string[],
-              name: name as string,
-            } as ProfileInfo,
+            },
           };
         },
         signIn: {
-          resolver(info, ctx) {
+          async resolver({ result, profile }, ctx) {
             /**
-             * info {
-             *   result // info from IBM verify
-             *   profile // profile from authHandler to be used for frontend
-             * }
+             * result // info from IBM verify
+             * profile // profile from authHandler to be used for frontend
              */
-            const {
-              result: { userinfo },
-            } = info;
+            const { userinfo } = result;
 
-            const userEntity = stringifyEntityRef({
+            if (!profile.email) {
+              throw new Error(
+                'Login failed, user profile does not contain an email',
+              );
+            }
+
+            const userEntity = {
               apiVersion: 'backstage.io/v1alpha1',
               kind: 'User',
               metadata: {
-                name: userinfo.sub as string,
+                name: profile.email,
                 namespace: DEFAULT_NAMESPACE,
+                annotations: {
+                  'ibm-verify/email': profile.email,
+                  'ibm-verify/name': userinfo.name,
+                  'ibm-verify/sub': userinfo.sub,
+                },
               },
               spec: {
-                displayName: userinfo.displayName as string,
-                email: userinfo.email as string,
+                profile,
                 memberOf: userinfo.groupIds as string[],
               },
-            });
+              // explicit relations as this user entity won't be on Backstage
+              // TODO: dynamic relations according to groupIds
+              relations: [
+                {
+                  type: 'memberOf',
+                  targetRef: 'group:default/admin',
+                },
+              ],
+            } as Entity;
+
+            const ownershipRefs = getDefaultOwnershipEntityRefs(userEntity);
 
             return ctx.issueToken({
               claims: {
-                sub: userEntity, // The user's identity
-                ent: [userEntity], // A list of identities that the user claims ownership through
+                sub: stringifyEntityRef(userEntity), // The user's identity
+                ent: ownershipRefs, // A list of identities that the user claims ownership through
               },
             });
           },

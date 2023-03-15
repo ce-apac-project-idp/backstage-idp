@@ -40,24 +40,21 @@ import { RhacmPage } from '@internal/backstage-plugin-rhacm';
 import { RhacsPage } from '@internal/backstage-plugin-rhacs';
 
 const appComponent =
-  process.env.NODE_ENV === 'test'
+  process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development'
     ? {}
     : ({
-        SignInPage: props =>
-          process.env.NODE_ENV === 'development' ? (
-            <div />
-          ) : (
-            <SignInPage
-              {...props}
-              auto
-              provider={{
-                id: 'ibm-verify-oidc-provider',
-                title: 'IBM Security Verify',
-                message: 'Sign in using IBM Security Verify',
-                apiRef: ibmOIDCAuthApiRef,
-              }}
-            />
-          ),
+        SignInPage: props => (
+          <SignInPage
+            {...props}
+            auto
+            provider={{
+              id: 'ibm-verify-oidc-provider',
+              title: 'IBM Security Verify',
+              message: 'Sign in using IBM Security Verify',
+              apiRef: ibmOIDCAuthApiRef,
+            }}
+          />
+        ),
       } as AppComponents);
 
 const app = createApp({

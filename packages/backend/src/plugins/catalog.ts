@@ -3,8 +3,8 @@ import {
   CatalogProcessor,
   CatalogProcessorCache,
   CatalogProcessorEmit,
+  CatalogBuilder,
 } from '@backstage/plugin-catalog-backend';
-import { CatalogBuilder } from '@backstage/plugin-catalog-backend/alpha';
 import { LocationSpec } from '@backstage/plugin-catalog-common';
 import { ScaffolderEntitiesProcessor } from '@backstage/plugin-scaffolder-backend';
 import { ManagedClusterProvider } from '@internal/backstage-plugin-rhacm-backend';

@@ -5,12 +5,40 @@ import {
   defaultAuthProviderFactories,
 } from '@backstage/plugin-auth-backend';
 import { Router } from 'express';
-import { PluginEnvironment } from '../types';
 import {
   DEFAULT_NAMESPACE,
   Entity,
   stringifyEntityRef,
 } from '@backstage/catalog-model';
+import { PluginEnvironment } from '../types';
+
+/**
+ * It's better to use plural from for group name in Backstage
+ * because 'owner' of an entity does not distinguish between user and group.
+ *
+ * For now, it only cares admin/developer
+ */
+function pluralizeGroupIds(groupsIds: string[]) {
+  return groupsIds.map(id => {
+    if (id === 'admin') {
+      return 'admins';
+    } else if (id === 'developer') {
+      return 'developers';
+    }
+    return id.replace(/ /g, '');
+  });
+}
+
+function generateRelations(groupIds: string[]) {
+  const relations = [];
+  groupIds.forEach(id => {
+    relations.push({
+      type: 'memberOf',
+      targetRef: `group:default/${id}`,
+    });
+  });
+  return relations;
+}
 
 export default async function createPlugin(
   env: PluginEnvironment,
@@ -97,6 +125,8 @@ export default async function createPlugin(
               );
             }
 
+            const groupIds = pluralizeGroupIds(userinfo.groupIds as string[]);
+
             const userEntity = {
               apiVersion: 'backstage.io/v1alpha1',
               kind: 'User',
@@ -111,16 +141,10 @@ export default async function createPlugin(
               },
               spec: {
                 profile,
-                memberOf: userinfo.groupIds as string[],
+                memberOf: groupIds,
               },
               // explicit relations as this user entity won't be on Backstage
-              // TODO: dynamic relations according to groupIds
-              relations: [
-                {
-                  type: 'memberOf',
-                  targetRef: 'group:default/admin',
-                },
-              ],
+              relations: generateRelations(groupIds),
             } as Entity;
 
             const ownershipRefs = getDefaultOwnershipEntityRefs(userEntity);

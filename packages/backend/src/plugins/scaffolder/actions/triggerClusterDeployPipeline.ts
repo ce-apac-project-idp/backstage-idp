@@ -3,6 +3,7 @@ import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import { z } from 'zod';
 
 export const triggerClusterDeployPipelineAction = () => {
+  // @ts-ignore
   return createTemplateAction({
     id: 'ibm:trigger-cluster-deploy-pipeline',
     description:

@@ -57,6 +57,9 @@ const appComponent =
         ),
       } as AppComponents);
 
+console.log(process.env.NODE_ENV); // eslint-disable-line no-console
+console.log(appComponent); // eslint-disable-line no-console
+
 const app = createApp({
   apis,
   plugins: [badgesPlugin],

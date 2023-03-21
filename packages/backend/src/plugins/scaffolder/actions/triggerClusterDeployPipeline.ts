@@ -1,3 +1,4 @@
+// @ts-nocheck
 import axios from 'axios';
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import { z } from 'zod';

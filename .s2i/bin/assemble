@@ -36,11 +36,23 @@ if [[ $? != 0 ]]; then
 fi
 
 
+# Check whether to use provided app-config.yaml
 # Backstage needs production 'app-config.yaml' and any required envvar at build time
-rm app-config.local.yaml
-(export $(grep -v '^#' .env | xargs); envsubst < app-config.yaml > app-config.prod.yaml)
-mv app-config.prod.yaml app-config.yaml
-cat app-config.yaml
+echo "---> Decide to use app config from configmap"
+USE_PROVIDED_APP_CONFIG=$(cat use-provided-app-config);
+echo "$USE_PROVIDED_APP_CONFIG";
+
+if [[ $USE_PROVIDED_APP_CONFIG == 'true' ]]; then
+  echo "---> Using app-config.prod.yaml from configmap"
+  mv app-config.prod.yaml app-config.yaml
+  cat app-config.yaml
+else
+  echo "---> Generate app-config.yaml from .env"
+  rm app-config.local.yaml
+  (export $(grep -v '^#' .env | xargs); envsubst < app-config.yaml > app-config.prod.yaml)
+  mv app-config.prod.yaml app-config.yaml
+  cat app-config.yaml
+fi
 
 echo "---> Building in production mode"
 yarn install --frozen-lockfile --network-timeout 300000

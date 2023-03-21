@@ -1,10 +1,15 @@
-// @ts-nocheck
 import axios from 'axios';
 import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import { z } from 'zod';
 
 export const triggerClusterDeployPipelineAction = () => {
-  return createTemplateAction({
+  return createTemplateAction<{
+    clusterName: string;
+    clusterRegion: string;
+    targetCloud: string;
+    ocpVersion: string;
+    multiZone: string;
+  }>({
     id: 'ibm:trigger-cluster-deploy-pipeline',
     description:
       'Custom action triggering pipeline to provision a new managed cluster',

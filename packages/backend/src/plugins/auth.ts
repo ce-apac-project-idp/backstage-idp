@@ -8,6 +8,7 @@ import { Router } from 'express';
 import {
   DEFAULT_NAMESPACE,
   Entity,
+  EntityRelation,
   stringifyEntityRef,
 } from '@backstage/catalog-model';
 import { PluginEnvironment } from '../types';
@@ -30,7 +31,7 @@ function pluralizeGroupIds(groupsIds: string[]) {
 }
 
 function generateRelations(groupIds: string[]) {
-  const relations = [];
+  const relations: EntityRelation[] = [];
   groupIds.forEach(id => {
     relations.push({
       type: 'memberOf',

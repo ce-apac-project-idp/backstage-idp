@@ -12,9 +12,10 @@
     "build:backend": "yarn workspace backend build",
     "build:all": "backstage-cli repo build --all",
     "build-image": "yarn workspace backend build-image",
-    "tsc": "tsc",
+    "tsc": "NODE_OPTIONS='--max-old-space-size=8192' tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "clean": "backstage-cli repo clean",
+    "clean:node_modules": "find . -name node_modules -exec rm -rf {}",
     "diff": "lerna run diff --",
     "test": "backstage-cli repo test",
     "test:all": "backstage-cli repo test --coverage",
@@ -41,7 +42,7 @@
     "lint-staged": "^13.1.0",
     "node-gyp": "^9.0.0",
     "prettier": "^2.3.2",
-    "typescript": "~4.6.4"
+    "typescript": "^5.0.2"
   },
   "resolutions": {
     "@types/react": "^17",

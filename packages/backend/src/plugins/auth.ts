@@ -19,7 +19,11 @@ import { PluginEnvironment } from '../types';
  *
  * For now, it only cares admin/developer
  */
-function pluralizeGroupIds(groupsIds: string[]) {
+function pluralizeGroupIds(groupsIds: string[] | undefined) {
+  if (!groupsIds || !groupsIds.length) {
+    return [];
+  }
+
   return groupsIds.map(id => {
     if (id === 'admin') {
       return 'admins';

@@ -1,4 +1,3 @@
-// @ts-nocheck
 import { createConditionFactory } from '@backstage/plugin-permission-node';
 import { createCatalogPermissionRule } from '@backstage/plugin-catalog-backend/alpha';
 import type { Entity } from '@backstage/catalog-model';

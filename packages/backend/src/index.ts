@@ -21,8 +21,8 @@ import scaffolder from './plugins/scaffolder';
 import proxy from './plugins/proxy';
 import techdocs from './plugins/techdocs';
 import search from './plugins/search';
-// import rhacm from './plugins/rhacm';
-// import rhacs from './plugins/rhacs';
+import rhacm from './plugins/rhacm';
+import rhacs from './plugins/rhacs';
 import kubernetes from './plugins/kubernetes';
 import tekton from './plugins/tekton-pipelines';
 import { PluginEnvironment } from './types';
@@ -91,8 +91,8 @@ async function main() {
   const appEnv = useHotMemoize(module, () => createEnv('app'));
   const kubernetesEnv = useHotMemoize(module, () => createEnv('kubernetes'));
   const tektonEnv = useHotMemoize(module, () => createEnv('tekton'));
-  // const rhacmEnv = useHotMemoize(module, () => createEnv('rhacm'));
-  // const rhacsEnv = useHotMemoize(module, () => createEnv('rhacs'));
+  const rhacmEnv = useHotMemoize(module, () => createEnv('rhacm'));
+  const rhacsEnv = useHotMemoize(module, () => createEnv('rhacs'));
 
   const apiRouter = Router();
   apiRouter.use('/catalog', await catalog(catalogEnv));

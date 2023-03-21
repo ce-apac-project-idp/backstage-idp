@@ -30,7 +30,7 @@ function pluralizeGroupIds(groupsIds: string[]) {
 }
 
 function generateRelations(groupIds: string[]) {
-  const relations: { type: string; targetRef: string; }[] = [];
+  const relations = [];
   groupIds.forEach(id => {
     relations.push({
       type: 'memberOf',

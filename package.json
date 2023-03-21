@@ -15,7 +15,7 @@
     "tsc": "NODE_OPTIONS='--max-old-space-size=8192' tsc",
     "tsc:full": "tsc --skipLibCheck false --incremental false",
     "clean": "backstage-cli repo clean",
-    "clean:node_modules": "find . -name node_modules -exec rm -rf {}",
+    "clean:node_modules": "find . -name node_modules -exec rm -rf {} \\;",
     "diff": "lerna run diff --",
     "test": "backstage-cli repo test",
     "test:all": "backstage-cli repo test --coverage",

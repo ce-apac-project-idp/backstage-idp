@@ -33,7 +33,7 @@ import {
 } from '../helpers/kubernetes';
 import { CONSOLE_CLAIM, HUB_CLUSTER_NAME_IN_ACM } from '../constants';
 import { getClaim } from '../helpers/parser';
-import { getHubClusterName } from '../helpers/config';
+import { getHubClusterFromConfig } from '../helpers/config';
 
 /**
  * Provides OpenShift cluster resource entities from RHACM.
@@ -56,8 +56,7 @@ export class ManagedClusterProvider implements EntityProvider {
 
   static fromConfig(config: Config, options: { logger: winston.Logger }) {
     const client = hubApiClient(config, options.logger);
-    const hubName = getHubClusterName(config);
-
+    const hubName = getHubClusterFromConfig(config)?.getString("name");
     return new ManagedClusterProvider(client, hubName, options);
   }
   public async connect(connection: EntityProviderConnection): Promise<void> {

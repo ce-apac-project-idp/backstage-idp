@@ -58,6 +58,7 @@ kubernetes:
     - type: 'config'
       clusters:
         - url: ${KUBE_API_ENDPOINT}
+          type: 'hub'
           name: ${KUBE_CLUSTER_NAME}
           authProvider: 'serviceAccount'
           skipTLSVerify: true
@@ -74,6 +75,7 @@ kubernetes:
 
 rhacm:
   hub: ${RHACM_HUB_CLUSTER}
+  enabled: 'true'
 
 rhacs:
   token: ${RHACS_API_TOKEN}

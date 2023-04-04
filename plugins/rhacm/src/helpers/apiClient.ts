@@ -13,10 +13,17 @@ const clusterApiFetchCall = (
   return jsonResponse;
 };
 
-export function getStringValueGivenKey(configApi: ConfigApi, key: string) {
-  console.log(key);
-  return configApi.getString(key);
-}
+export const getStringValueGivenKey = async(configApi: ConfigApi, key: string):
+  Promise<any> => {
+    const backendUrl = configApi.getString('backend.baseUrl');
+    const response = fetch(`${backendUrl}/api/rhacm/managedClusterIdentifier`);
+    // .then(
+    //   r => r.body,
+    // );
+    return response;
+  }
+  
+
 
 export const getClusters = async (
   configApi: ConfigApi,

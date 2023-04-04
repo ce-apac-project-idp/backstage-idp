@@ -79,14 +79,15 @@ const CatalogClusters = () => {
   const configApi = useApi(configApiRef);
   const classes = useCatalogStyles();
 
-  const clusterKind = getStringValueGivenKey(configApi, 'rhacm.clusterKind');
-  const clusterValue = getStringValueGivenKey(configApi, 'rhacm.clusterValue');
+  const clusterKind = getStringValueGivenKey(configApi, 'rhacm.clusterKind')
+    .then((result: string) => {return result});
+  console.log(clusterKind);
   
   const [clusterEntities, setClusterEntities] = useState<clusterEntity[]>([]);
   const [{ loading, error }, refresh] = useAsyncFn(
     async () => {
       const clusterResourceEntities = await catalogApi.getEntities({
-        filter: { kind: clusterKind, 'spec.type': clusterValue},
+        filter: { kind: clusterKind, 'spec.type': 'kubernetes-cluster' },
       });
 
       const clusters = await getClusters(configApi);

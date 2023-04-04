@@ -121,8 +121,8 @@ kubernetes:
 
 rhacm:
   hub: ${RHACM_HUB_CLUSTER}
-  clusterKind: 'Resource' 
-  clusterValue: 'kubernetes-cluster'
+  clusterKind: ${RHACM_CLUSTER_KIND}
+  clusterValue: ${RHACM_CLUSTER_VALUE}
 
 rhacs:
   token: ${RHACS_API_TOKEN}

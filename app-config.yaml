@@ -105,7 +105,7 @@ kubernetes:
     - type: 'config'
       clusters:
         - url: ${KUBE_API_ENDPOINT} # Allowed types are "hub" and "standalone". At most 1 Hub is allowed.
-          type: 'hub'  # If this is of type "hub", then it MUST coincde with rhacm.hub. This can be simplified later.
+          type: 'hub'  # If this is of type "hub", then this implies the RHACM plugin will be used.
           name: ${RHACM_HUB_CLUSTER}
           authProvider: 'serviceAccount'
           skipTLSVerify: true
@@ -121,8 +121,7 @@ kubernetes:
       plural: 'managedclusters'
 
 rhacm:
-  hub: ${RHACM_HUB_CLUSTER}
-  enabled: "true"
+  enabled: $(RHACM_ENABLED)
 
 rhacs:
   token: ${RHACS_API_TOKEN}

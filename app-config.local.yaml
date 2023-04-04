@@ -74,6 +74,8 @@ kubernetes:
 
 rhacm:
   hub: ${RHACM_HUB_CLUSTER}
+  clusterKind: 'Resource' # This info will be in a configmap shared wth Tekton pods too, in order to catalog the resource back to the repository.
+  clusterValue: 'kubernetes-cluster'
 
 rhacs:
   token: ${RHACS_API_TOKEN}

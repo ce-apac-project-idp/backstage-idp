@@ -13,6 +13,11 @@ const clusterApiFetchCall = (
   return jsonResponse;
 };
 
+export function getStringValueGivenKey(configApi: ConfigApi, key: string) {
+  console.log(key);
+  return configApi.getString(key);
+}
+
 export const getClusters = async (
   configApi: ConfigApi,
 ): Promise<ClusterDetails[] | ErrorResponseBody> =>

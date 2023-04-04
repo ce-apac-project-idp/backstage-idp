@@ -21,7 +21,7 @@ import useAsyncFn from 'react-use/lib/useAsyncFn';
 import useDebounce from 'react-use/lib/useDebounce';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
-import { getClusters } from '../../helpers/apiClient';
+import { getClusters, getStringValueGivenKey } from '../../helpers/apiClient';
 import { HomePageCompanyLogo } from '@backstage/plugin-home';
 import { ErrorResponseBody } from '@backstage/errors';
 import { ClusterDetails } from '@internal/backstage-plugin-rhacm-common';
@@ -79,11 +79,14 @@ const CatalogClusters = () => {
   const configApi = useApi(configApiRef);
   const classes = useCatalogStyles();
 
+  const clusterKind = getStringValueGivenKey(configApi, 'rhacm.clusterKind');
+  const clusterValue = getStringValueGivenKey(configApi, 'rhacm.clusterValue');
+  
   const [clusterEntities, setClusterEntities] = useState<clusterEntity[]>([]);
   const [{ loading, error }, refresh] = useAsyncFn(
     async () => {
       const clusterResourceEntities = await catalogApi.getEntities({
-        filter: { kind: 'Resource', 'spec.type': 'kubernetes-cluster' },
+        filter: { kind: clusterKind, 'spec.type': clusterValue},
       });
 
       const clusters = await getClusters(configApi);

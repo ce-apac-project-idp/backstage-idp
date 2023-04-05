@@ -46,17 +46,16 @@ export async function createRouter(
   const router = Router();
   router.use(express.json());
 
-  router.get('/managedClusterIdentifier', async (_, response) => {
+  router.get('/conf/:value', async ({ params: { value } }, response) => {
     logger.info("Obtaining managed cluster identifier");
-    return new Promise((resolve, reject) => { 
-      if (config.getOptionalString('rhacm.clusterKind')) {
-        resolve(config.getString('rhacm.clusterKind'));
+    const resp = await new Promise((resolve, reject) => {
+      if (config.getOptionalString(value)) {
+        resolve(config.getString(value));
       } else {
         reject("Not found");
       }
-    }).then(r => {
-    response.send(r)
     });
+    response.send(resp);
   })
 
   router.get(

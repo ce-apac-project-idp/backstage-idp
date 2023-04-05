@@ -73,7 +73,7 @@ kubernetes:
       plural: 'managedclusters'
 
 rhacm:
-  hub: ${RHACM_HUB_CLUSTER}
+  hub: ${RHACM_HUB_CLUSTER} 
   clusterKind: ${RHACM_CLUSTER_KIND}
   clusterValue: ${RHACM_CLUSTER_VALUE}
 

@@ -121,7 +121,7 @@ kubernetes:
       plural: 'managedclusters'
 
 rhacm:
-  enabled: $(RHACM_ENABLED)
+  enabled: ${RHACM_ENABLED}
 
 rhacs:
   token: ${RHACS_API_TOKEN}

@@ -79,29 +79,19 @@ const CatalogClusters = () => {
   const configApi = useApi(configApiRef);
   const classes = useCatalogStyles();
 
-
-  // const clusterKind = getConf(configApi, 'rhacm.clusterKind')
-  // .then((result: string) => {return result});
-  // const clusterValue = getConf(configApi, 'rhacm.clusterValue')
-  // .then((result: string) => {return result});;
-  // console.log(clusterKind);
   
   const [clusterEntities, setClusterEntities] = useState<clusterEntity[]>([]);
   const [{ loading, error }, refresh] = useAsyncFn(
     async () => {
-      const clusterKind = await getConf(configApi, 'rhacm.clusterKind');
-      // .then((result: string) => {return result});
 
+      const clusterKind = await getConf(configApi, 'rhacm.clusterKind');
       const clusterValue = await getConf(configApi, 'rhacm.clusterValue');
-      // .then((result: string) => {return result});;
 
       const clusterResourceEntities = await catalogApi.getEntities({
-        filter: { kind: 'Resource', 'spec.type': clusterValue },
+        filter: { kind: clusterKind, 'spec.type': clusterValue },
       });
 
       const clusters = await getClusters(configApi);
-      // console.log(clusterResourceEntities);
-      // console.log(clusters);
 
       if ('error' in clusters) {
         throw new Error((clusters as ErrorResponseBody).error.message);

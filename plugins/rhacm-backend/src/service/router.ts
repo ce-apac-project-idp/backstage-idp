@@ -46,16 +46,8 @@ export async function createRouter(
   const router = Router();
   router.use(express.json());
 
-  router.get('/conf/:value', async ({ params: { value } }, response) => {
-    logger.info("Obtaining managed cluster identifier");
-    const resp = await new Promise((resolve, reject) => {
-      if (config.getOptionalString(value)) {
-        resolve(config.getString(value));
-      } else {
-        reject("Not found");
-      }
-    });
-    response.send(resp);
+  router.get('/conf/:value', ({ params: { value } }, response) => {
+    return response.send({ data: config.getOptionalString(value)});
   })
 
   router.get(

@@ -18,9 +18,9 @@ export const getConf = async(configApi: ConfigApi, key: string):
     const backendUrl = configApi.getString('backend.baseUrl');
     const response = await fetch(`${backendUrl}/api/rhacm/conf/${key}`)
     .then(
-      r => r.body,
+      r => r.json(),
     );
-    return response;
+    return response.data;
   }
   
 

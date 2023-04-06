@@ -104,7 +104,7 @@ async function main() {
   apiRouter.use('/search', await search(searchEnv));
   apiRouter.use('/kubernetes', await kubernetes(kubernetesEnv));
   apiRouter.use('/tekton-pipelines', await tekton(tektonEnv));
-  // apiRouter.use('/rhacm', await rhacm(rhacmEnv));
+  apiRouter.use('/rhacm', await rhacm(rhacmEnv));
   // apiRouter.use('/rhacs', await rhacs(rhacsEnv));
 
   // Add backends ABOVE this line; this 404 handler is the catch-all fallback

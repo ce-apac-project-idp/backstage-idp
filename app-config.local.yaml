@@ -76,6 +76,8 @@ kubernetes:
 
 rhacm:
   enabled: ${RHACM_ENABLED}
+  clusterKind: ${RHACM_CLUSTER_KIND}
+  clusterValue: ${RHACM_CLUSTER_VALUE}
 
 rhacs:
   token: ${RHACS_API_TOKEN}

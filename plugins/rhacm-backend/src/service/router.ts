@@ -46,6 +46,10 @@ export async function createRouter(
   const router = Router();
   router.use(express.json());
 
+  router.get('/config/:configKey', ({ params: { configKey } }, response) => {
+    return response.send({ data: config.getOptionalString(configKey) });
+  });
+
   router.get(
     '/status/:clusterName',
     ({ params: { clusterName } }, response) => {

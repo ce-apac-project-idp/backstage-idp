@@ -13,6 +13,17 @@ const clusterApiFetchCall = (
   return jsonResponse;
 };
 
+export const getConfigWithKey = async (
+  configApi: ConfigApi,
+  key: string,
+): Promise<any> => {
+  const backendUrl = configApi.getString('backend.baseUrl');
+  const response = await fetch(`${backendUrl}/api/rhacm/config/${key}`).then(
+    r => r.json(),
+  );
+  return response.data;
+};
+
 export const getClusters = async (
   configApi: ConfigApi,
 ): Promise<ClusterDetails[] | ErrorResponseBody> =>

@@ -21,7 +21,7 @@ import useAsyncFn from 'react-use/lib/useAsyncFn';
 import useDebounce from 'react-use/lib/useDebounce';
 import { configApiRef, useApi } from '@backstage/core-plugin-api';
 import { Entity } from '@backstage/catalog-model';
-import { getClusters, getConf } from '../../helpers/apiClient';
+import { getClusters, getConfigWithKey } from '../../helpers/apiClient';
 import { HomePageCompanyLogo } from '@backstage/plugin-home';
 import { ErrorResponseBody } from '@backstage/errors';
 import { ClusterDetails } from '@internal/backstage-plugin-rhacm-common';
@@ -79,13 +79,17 @@ const CatalogClusters = () => {
   const configApi = useApi(configApiRef);
   const classes = useCatalogStyles();
 
-  
   const [clusterEntities, setClusterEntities] = useState<clusterEntity[]>([]);
   const [{ loading, error }, refresh] = useAsyncFn(
     async () => {
-
-      const clusterKind = await getConf(configApi, 'rhacm.clusterKind');
-      const clusterValue = await getConf(configApi, 'rhacm.clusterValue');
+      const clusterKind = await getConfigWithKey(
+        configApi,
+        'rhacm.clusterKind',
+      );
+      const clusterValue = await getConfigWithKey(
+        configApi,
+        'rhacm.clusterValue',
+      );
 
       const clusterResourceEntities = await catalogApi.getEntities({
         filter: { kind: clusterKind, 'spec.type': clusterValue },

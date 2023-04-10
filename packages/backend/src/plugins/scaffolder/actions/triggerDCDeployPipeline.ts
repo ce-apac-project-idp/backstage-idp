@@ -3,21 +3,21 @@ import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import { z } from 'zod';
 
 export const triggerDCDeployPipelineAction = () => {
-  return createTemplateAction({
+  return createTemplateAction<{
+    cloud: string;
+    region: string;
+    version: string;
+  }>({
     id: 'ibm:trigger-datacap-deploy-pipeline',
     description:
       'Custom action triggering pipeline to provision a DC application',
     schema: {
       input: z.object({
-        cloud: z
+        cloud: z.string().describe('Hyperscaler to deploy this too'),
+        region: z.string().describe('Region to deploy application to'),
+        version: z
           .string()
-          .describe('Hyperscaler'),
-        region: z
-          .string()
-          .describe('Region within Hyperscaler'),
-        version: z.
-        string().
-        describe('Version of DC')
+          .describe('Version of datacap application to deploy'),
       }) as z.ZodType,
     },
 
@@ -32,7 +32,7 @@ export const triggerDCDeployPipelineAction = () => {
         const data = {
           cloud: ctx.input.cloud,
           region: ctx.input.region,
-          version: ctx.input.version
+          version: ctx.input.version,
         };
 
         const response = await axios.post(

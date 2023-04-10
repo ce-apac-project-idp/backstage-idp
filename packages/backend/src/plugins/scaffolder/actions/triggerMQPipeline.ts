@@ -3,7 +3,11 @@ import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import { z } from 'zod';
 
 export const triggerMQPipelineAction = () => {
-  return createTemplateAction({
+  return createTemplateAction<{
+    clusterName: string;
+    persistence: string;
+    highAvailability: string;
+  }>({
     id: 'ibm:call-mq-build-pipeline',
     description:
       'Custom action triggering pipeline to provision a MQ environment',
@@ -13,8 +17,8 @@ export const triggerMQPipelineAction = () => {
           .string()
           .describe('The name of the cluster to be created'),
         persistence: z
-        .string()
-        .describe('Whether to enable persistent storage'),
+          .string()
+          .describe('Whether to enable persistent storage'),
         highAvailability: z
           .string()
           .describe('Whether to deploy the MQ server in HA'),

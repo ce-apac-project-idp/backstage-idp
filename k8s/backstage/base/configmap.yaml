@@ -4,5 +4,201 @@ metadata:
   name: backstage-config
   namespace: backstage
 data:
+  use-provided-app-config: |
+    true
+  app-config.prod.yaml: |
+    app:
+      title: IBM Internal Developer Platform
+      baseUrl: https://backstage-backstage.itzroks-666000qmn3-85z15f-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud
+
+    backend:
+      # Used for enabling authentication, secret is shared by all backend plugins
+      # See https://backstage.io/docs/tutorials/backend-to-backend-auth for information on the format
+      # auth:
+      #   keys:
+      #     - secret: boxVNSXbVcTxjNDWAQZqUZa9tbxcEDqk
+      baseUrl: https://backstage-backstage.itzroks-666000qmn3-85z15f-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud
+      listen:
+        port: 7007
+        # Uncomment the following host directive to bind to specific interfaces
+        # host: 127.0.0.1
+      cors:
+        origin: https://backstage-backstage.itzroks-666000qmn3-85z15f-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud
+        methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+        credentials: true
+      # Content-Security-Policy directives follow the Helmet format
+      # See https://helmetjs.github.io/#reference
+      # Default Helmet Content-Security-Policy values can be removed by setting the key to false
+      csp:
+        connect-src: ["'self'", 'http:', 'https:']
+      database:
+        client: better-sqlite3
+        connection: ':memory:'
+      cache:
+        store: memory
+      # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
+      # workingDirectory: /tmp
+      auth:
+        keys:
+          - secret: boxVNSXbVcTxjNDWAQZqUZa9tbxcEDqk
+
+    permission:
+      enabled: true
+
+    # See official README.md in the proxy-backend plugin for information on the configuration format
+    proxy:
+      '/test':
+        target: 'https://example.com'
+        changeOrigin: true
+
+    organization:
+      name: IBM
+
+    integrations:
+      github:
+        - host: github.com
+          # This is a Personal Access Token or PAT from GitHub. You can find out how to generate this token, and more information
+          # about setting up the GitHub integration here: https://backstage.io/docs/getting-started/configuration#setting-up-a-github-integration
+          token: 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
+      ### Example for how to add your GitHub Enterprise instance using the API:
+      # - host: ghe.example.net
+      #   apiBaseUrl: https://ghe.example.net/api/v3
+      #   token: 
+      ### Example for how to add your GitHub Enterprise instance using raw HTTP fetches (token is optional):
+      # - host: ghe.example.net
+      #   rawBaseUrl: https://ghe.example.net/raw
+      #   token: 
+
+    auth:
+      environment: development
+      session:
+        secret: devsessionsecret
+      providers:
+        github:
+          development:
+            clientId: Iv1.a86906fa3a97f414
+            clientSecret: 2ab23f7db4be66133d8093d73aaf3880753e041c
+        ibm-verify-oidc-provider:
+          development:
+            metadataUrl: https://idp.verify.ibm.com/oidc/endpoint/default/.well-known/openid-configuration
+            clientId: 74012bed-3482-4970-bbcf-3753a7dc99d3
+            clientSecret: k9Vl6uIuS7
+            prompt: auto # allowed values: auto, none, consent, login
+
+    # Reference documentation http://backstage.io/docs/features/techdocs/configuration
+    # Note: After experimenting with basic setup, use CI/CD to generate docs
+    # and an external cloud storage when deploying TechDocs for production use-case.
+    # https://backstage.io/docs/features/techdocs/how-to-guides#how-to-migrate-from-techdocs-basic-to-recommended-deployment-approach
+    techdocs:
+      builder: 'local' # Alternatives - 'external'
+      generator:
+        runIn: 'docker'
+        # dockerImage: my-org/techdocs # use a custom docker image
+        # pullImage: true # or false to disable automatic pulling of image (e.g. if custom docker login is required)
+      publisher:
+        type: 'local' # Alternatives - 'googleGcs' or 'awsS3' or 'azureBlobStorage' or 'openStackSwift'. Read documentation for using alternatives.
+
+    scaffolder:
+    # Reference documentation https://backstage.io/docs/features/software-templates/configuration
+    # Use to customize default commit author info used when new components are created
+    # defaultAuthor:
+    #   name: Scaffolder
+    #   email: scaffolder@backstage.io
+    # Use to customize the default commit message when new components are created
+    # defaultCommitMessage: 'Initial commit'
+
+    kubernetes:
+      serviceLocatorMethod:
+        type: 'multiTenant'
+      clusterLocatorMethods:
+        - type: 'config'
+          clusters:
+            - url: https://c100-e.au-syd.containers.cloud.ibm.com:30249
+              name: local-cluster
+              authProvider: 'serviceAccount'
+              skipTLSVerify: true
+              serviceAccountToken: eyJhbGciOiJSUzI1NiIsImtpZCI6IkVpWG16ZnAyd3NoUHJDbFRfX1h3b1oxRzhaYTNSMkpSM2N4WHZkRUlnTncifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImRlZmF1bHQtYWRtaW4tdG9rZW4tYm42anEiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGVmYXVsdC1hZG1pbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6ImMwZWNlNDdlLTgxZTYtNGNkNi1iOTMyLWEyZTFjMTc4YjQxYyIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmRlZmF1bHQtYWRtaW4ifQ.V938_4xwHzSfQQgDNXIDGlQJz9AoCzgIeG0pPP7WZn_iS__KS7VkXiqvlexFYpvUHt_C_Gb0ItJuqhOeefhYY8kgyT98QhQvpGsuToVbPTSTr9cYuTHBZSpE3O-5Gh0CsKwW1VUo7dWfY9Zlr_txI3L7Rb73buuTzyFi_1FYo0ahMba2uDeDgv9QvvF45eXixT4Bzrd412Z1tCi2l4ydsaay8ifl35HGJ_UYn-GeEJ0Dk0SnPMPkV0SRVWzDlQV4fgEgCiJUcjmJCIViGRRln6Cyk2wlKuN_rES0RTkGhjxNW7YK9Lo5qT3-VXymB5Hd3_5awVzaJhdXZjbpl4S3lg
+              dashboardUrl: https://console-openshift-console.itzroks-666000qmn3-85z15f-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud
+              dashboardApp: openshift
+              customResources:
+                - group: 'cluster.open-cluster-management.io'
+                  apiVersion: 'v1'
+                  plural: 'managedclusters'
+            - url: https://api.govtech.onetouchprovisioning.com:6443
+              name: govtech
+              authProvider: 'serviceAccount'
+              skipTLSVerify: true
+              serviceAccountToken: eyJhbGciOiJSUzI1NiIsImtpZCI6IlNSSmZ4UFlRdEp6M2FhdXBnbGlJNmJUZWJQS2dYVlBtNWtfNldfN0RYXzQifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJnb3Z0ZWNoIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImFkbWluLXNhLXRva2VuLTc5bTRjIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQubmFtZSI6ImFkbWluLXNhIiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZXJ2aWNlLWFjY291bnQudWlkIjoiOTVlYTFmYmQtY2JiZC00OWVmLWI1MWQtNmI5NmQ4OWU0MzBjIiwic3ViIjoic3lzdGVtOnNlcnZpY2VhY2NvdW50OmdvdnRlY2g6YWRtaW4tc2EifQ.gpd8mClwfs5YD-AT2zwRMzF8H-zISEq5vxB5OGzuYYqpbyC02IprAHgtRUl0m7XrAFiSxevjcG_wj6wvDsb1GsB5YsL0WgmqJgwnIJPr9BHnuE464dJdNharJvnjdtxfDRTzBmDzOzf9MMvPXcOwv4EzNb--uaawRnRUxFo-Dck1NdEOCgcgQt0qePrVSyCd8RJviXmlte1nnw4oJlIDscV7BWJNxUddXEEf-ZV0sOV0UGtDjsMzL3i73-0E-1YG3jkt23ubnngIzhFD6xW-fbHte_SzhfUGge-Qy6xVeHf7wXkkWabXgEjwjCb87_IKX7Ly5WkiS6QsNipOcTTu7xAtZJSl3jGmQnbsV6DrstpM6Vpthgc4OcLhEUiJ8bKVkUxkbBRwWT6mD2ou9Weyh-9Vwb1F9P8e_RjVqszg8VDfeSSC0S4rbMkd9Fb8jG8UFqyeJprLWsRonfG-CqKFGIwQJ7kqI3uOf69eJKMDwVbuS1KmRpLz-4ZkjotYmfj_mBHdczq-pUvJKdNVzteIU2T0NTdGv6VEGcAB8HEnSAt-sDkuTqslzmhuHh-47AmfKKNYKXzfHprx4HhdU9yvFBms0XG6UVhAIE4Ek5gjYr56m8ICxKwm-jVBqqfPyLOnnIcO29Pxf1T5i-eYrRcOdh_-qgSuc03OqbdjnMNXZ3Q
+              dashboardUrl: https://console-openshift-console.apps.govtech.onetouchprovisioning.com
+              dashboardApp: openshift
+      customResources:
+        - group: 'route.openshift.io'
+          apiVersion: 'v1'
+          plural: 'routes'
+
+    rhacm:
+      hub: local-cluster
+
+    rhacs:
+      token: eyJhbGciOiJSUzI1NiIsImtpZCI6IjZTZGJqRlBzSGRYanRUVWVVa2dhTC1LWDBILVZldlNGQWwtejF4dHF5dVUifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJ0ZXN0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImJhY2tzdGFnZS10b2tlbi10cnRxdyIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJiYWNrc3RhZ2UiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiJmZGU5MzEyZS0xMTM1LTQ4MGQtYjIyNi01YTIwMjkyMWEzNDciLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6dGVzdDpiYWNrc3RhZ2UifQ.qYo3RKjVLXfC10NrUPXu1TRZEd6BnD1KKsYp0SkCkiKSAhSLsW_55O4d2K49bfkgl4QbMgmX8ry0aZrPodc_LQJbeWXsGdxqzjps9SbJYp9P5tENKYmimS0IDZT9JbUHiVBq1GTLIj1hSMay3Q2363u9nm1uFoec6qrVnSjJSuQOZvQvveFuRHGt3qZPlkw1nFon2nKBZIzSuFa0CPOOGJynNsbvjXl8w14F1H9U_Pg6brqcA0e78FmJHtFpfAiUkUSQtemDX7lhNyKITfJdD1fw_OeXMYAfS1vCEKbQdZ6NrfB48r1eYe0dsrqde-2jCTlw-ygK7B4LDa-LXSkb5g
+
+    tekton:
+      - baseUrl: https://c100-e.au-syd.containers.cloud.ibm.com:30249
+        authorizationBearerToken: eyJhbGciOiJSUzI1NiIsImtpZCI6IkVpWG16ZnAyd3NoUHJDbFRfX1h3b1oxRzhaYTNSMkpSM2N4WHZkRUlnTncifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImRlZmF1bHQtYWRtaW4tdG9rZW4tYm42anEiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGVmYXVsdC1hZG1pbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6ImMwZWNlNDdlLTgxZTYtNGNkNi1iOTMyLWEyZTFjMTc4YjQxYyIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmRlZmF1bHQtYWRtaW4ifQ.V938_4xwHzSfQQgDNXIDGlQJz9AoCzgIeG0pPP7WZn_iS__KS7VkXiqvlexFYpvUHt_C_Gb0ItJuqhOeefhYY8kgyT98QhQvpGsuToVbPTSTr9cYuTHBZSpE3O-5Gh0CsKwW1VUo7dWfY9Zlr_txI3L7Rb73buuTzyFi_1FYo0ahMba2uDeDgv9QvvF45eXixT4Bzrd412Z1tCi2l4ydsaay8ifl35HGJ_UYn-GeEJ0Dk0SnPMPkV0SRVWzDlQV4fgEgCiJUcjmJCIViGRRln6Cyk2wlKuN_rES0RTkGhjxNW7YK9Lo5qT3-VXymB5Hd3_5awVzaJhdXZjbpl4S3lg
+        dashboardBaseUrl: https://tekton-dashboard-openshift-pipelines.itzroks-666000qmn3-85z15f-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud
+
+    catalog:
+      import:
+        entityFilename: catalog-info.yaml
+        pullRequestBranchName: backstage-integration
+      rules:
+        - allow:
+            - API
+            - Component
+            - Domain
+            - Location
+            - Resource
+            - System
+      locations:
+        # Add a location here to ingest it, for example from a URL:
+        #     - type: url
+        #       target: https://github.com/backstage/backstage/blob/master/packages/catalog-model/examples/all.yaml
+        #
+        # For local development you can use a file location instead:
+        #     - type: file
+        #       target: ../catalog-model/examples/all-components.yaml
+        #
+        # File locations are relative to the current working directory of the
+        # backend, for example packages/backend/.
+        - type: url
+          target: https://github.com/ce-apac-project-idp/backstage-idp-catalog/blob/main/all.yaml
+          rules:
+            - allow: [Group, Template, User]
+
   .env: |
-    <your .env>
+    NODE_TLS_REJECT_UNAUTHORIZED=0
+    BACKSTAGE_SUB_DOMAIN=backstage-backstage
+    OPENSHIFT_BASE_DOMAIN=itzroks-666000qmn3-85z15f-6ccd7f378ae819553d37d5f2ee142bd6-0000.au-syd.containers.appdomain.cloud
+    
+    BACKEND_SECRET=boxVNSXbVcTxjNDWAQZqUZa9tbxcEDqk
+    
+    POSTGRESQL_SERVICE_HOST=\${POSTGRESQL_SERVICE_HOST}
+    POSTGRESQL_SERVICE_PORT=\${POSTGRESQL_SERVICE_PORT}
+    POSTGRESQL_USER=\${POSTGRESQL_USER}
+    POSTGRESQL_PASSWORD=\${POSTGRESQL_PASSWORD}
+    
+    AUTH_SESSION_SECRET=devsessionsecret
+    AUTH_IBM_VERIFY_META_URL=https://idp.verify.ibm.com/oidc/endpoint/default/.well-known/openid-configuration
+    AUTH_IBM_VERIFY_CLIENT_ID=74012bed-3482-4970-bbcf-3753a7dc99d3
+    AUTH_IBM_VERIFY_CLIENT_SECRET=k9Vl6uIuS7
+    AUTH_GITHUB_CLIENT_ID=Iv1.a86906fa3a97f414
+    AUTH_GITHUB_CLIENT_SECRET=2ab23f7db4be66133d8093d73aaf3880753e041c
+    
+    GITHUB_TOKEN=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
+    
+    KUBE_API_ENDPOINT=https://c100-e.au-syd.containers.cloud.ibm.com:30249
+    KUBE_CLUSTER_NAME=local-cluster
+    KUBE_SERVICE_ACCOUNT_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6IkVpWG16ZnAyd3NoUHJDbFRfX1h3b1oxRzhaYTNSMkpSM2N4WHZkRUlnTncifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJkZWZhdWx0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImRlZmF1bHQtYWRtaW4tdG9rZW4tYm42anEiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC5uYW1lIjoiZGVmYXVsdC1hZG1pbiIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50LnVpZCI6ImMwZWNlNDdlLTgxZTYtNGNkNi1iOTMyLWEyZTFjMTc4YjQxYyIsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDpkZWZhdWx0OmRlZmF1bHQtYWRtaW4ifQ.V938_4xwHzSfQQgDNXIDGlQJz9AoCzgIeG0pPP7WZn_iS__KS7VkXiqvlexFYpvUHt_C_Gb0ItJuqhOeefhYY8kgyT98QhQvpGsuToVbPTSTr9cYuTHBZSpE3O-5Gh0CsKwW1VUo7dWfY9Zlr_txI3L7Rb73buuTzyFi_1FYo0ahMba2uDeDgv9QvvF45eXixT4Bzrd412Z1tCi2l4ydsaay8ifl35HGJ_UYn-GeEJ0Dk0SnPMPkV0SRVWzDlQV4fgEgCiJUcjmJCIViGRRln6Cyk2wlKuN_rES0RTkGhjxNW7YK9Lo5qT3-VXymB5Hd3_5awVzaJhdXZjbpl4S3lg
+    
+    RHACM_HUB_CLUSTER=local-cluster
+    RHACS_API_TOKEN=eyJhbGciOiJSUzI1NiIsImtpZCI6IjZTZGJqRlBzSGRYanRUVWVVa2dhTC1LWDBILVZldlNGQWwtejF4dHF5dVUifQ.eyJpc3MiOiJrdWJlcm5ldGVzL3NlcnZpY2VhY2NvdW50Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9uYW1lc3BhY2UiOiJ0ZXN0Iiwia3ViZXJuZXRlcy5pby9zZXJ2aWNlYWNjb3VudC9zZWNyZXQubmFtZSI6ImJhY2tzdGFnZS10b2tlbi10cnRxdyIsImt1YmVybmV0ZXMuaW8vc2VydmljZWFjY291bnQvc2VydmljZS1hY2NvdW50Lm5hbWUiOiJiYWNrc3RhZ2UiLCJrdWJlcm5ldGVzLmlvL3NlcnZpY2VhY2NvdW50L3NlcnZpY2UtYWNjb3VudC51aWQiOiJmZGU5MzEyZS0xMTM1LTQ4MGQtYjIyNi01YTIwMjkyMWEzNDciLCJzdWIiOiJzeXN0ZW06c2VydmljZWFjY291bnQ6dGVzdDpiYWNrc3RhZ2UifQ.qYo3RKjVLXfC10NrUPXu1TRZEd6BnD1KKsYp0SkCkiKSAhSLsW_55O4d2K49bfkgl4QbMgmX8ry0aZrPodc_LQJbeWXsGdxqzjps9SbJYp9P5tENKYmimS0IDZT9JbUHiVBq1GTLIj1hSMay3Q2363u9nm1uFoec6qrVnSjJSuQOZvQvveFuRHGt3qZPlkw1nFon2nKBZIzSuFa0CPOOGJynNsbvjXl8w14F1H9U_Pg6brqcA0e78FmJHtFpfAiUkUSQtemDX7lhNyKITfJdD1fw_OeXMYAfS1vCEKbQdZ6NrfB48r1eYe0dsrqde-2jCTlw-ygK7B4LDa-LXSkb5g

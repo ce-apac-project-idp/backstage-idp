@@ -8,6 +8,7 @@ import { Router } from 'express';
 import {
   DEFAULT_NAMESPACE,
   Entity,
+  EntityRelation,
   stringifyEntityRef,
 } from '@backstage/catalog-model';
 import { PluginEnvironment } from '../types';
@@ -18,7 +19,11 @@ import { PluginEnvironment } from '../types';
  *
  * For now, it only cares admin/developer
  */
-function pluralizeGroupIds(groupsIds: string[]) {
+function pluralizeGroupIds(groupsIds: string[] | undefined) {
+  if (!groupsIds || !groupsIds.length) {
+    return [];
+  }
+
   return groupsIds.map(id => {
     if (id === 'admin') {
       return 'admins';
@@ -30,7 +35,7 @@ function pluralizeGroupIds(groupsIds: string[]) {
 }
 
 function generateRelations(groupIds: string[]) {
-  const relations = [];
+  const relations: EntityRelation[] = [];
   groupIds.forEach(id => {
     relations.push({
       type: 'memberOf',

@@ -31,10 +31,10 @@ backend:
   # workingDirectory: /tmp
   auth:
     keys:
-      - secret: ${BACKEND_SECRET}
+      - secret: ${BACKEND_SECRET} # Setting permission.enabled to true means this must be defined.
 
 permission:
-  enabled: true
+  enabled: true # See backend.auth.keys.secret[0]
 
 # See official README.md in the proxy-backend plugin for information on the configuration format
 proxy:
@@ -104,25 +104,28 @@ kubernetes:
   clusterLocatorMethods:
     - type: 'config'
       clusters:
-        - url: ${KUBE_API_ENDPOINT}
-          name: ${KUBE_CLUSTER_NAME}
+        - url: ${KUBE_API_ENDPOINT} # Allowed types are "hub" and "standalone". At most 1 Hub is allowed.
+          type: 'hub'  # If this is of type "hub", then this implies the RHACM plugin will be used.
+          name: ${RHACM_HUB_CLUSTER}
           authProvider: 'serviceAccount'
           skipTLSVerify: true
           serviceAccountToken: ${KUBE_SERVICE_ACCOUNT_TOKEN}
           dashboardUrl: https://console-openshift-console.${OPENSHIFT_BASE_DOMAIN}
           dashboardApp: openshift
+          customResources:
+            - group: 'cluster.open-cluster-management.io'
+              apiVersion: 'v1'
+              plural: 'managedclusters'
   customResources:
     - group: 'route.openshift.io'
       apiVersion: 'v1'
       plural: 'routes'
-    - group: 'cluster.open-cluster-management.io'
-      apiVersion: 'v1'
-      plural: 'managedclusters'
 
 rhacm:
-  hub: ${RHACM_HUB_CLUSTER}
+  enabled: ${RHACM_ENABLED}
   clusterKind: ${RHACM_CLUSTER_KIND}
   clusterValue: ${RHACM_CLUSTER_VALUE}
+
 
 rhacs:
   token: ${RHACS_API_TOKEN}

@@ -3,21 +3,19 @@ import { createTemplateAction } from '@backstage/plugin-scaffolder-node';
 import { z } from 'zod';
 
 export const triggerACEDeployPipelineAction = () => {
-  return createTemplateAction({
+  return createTemplateAction<{
+    clusterName: string;
+    gitRepo: string;
+    barfile: string;
+  }>({
     id: 'ibm:trigger-ace-deploy-pipeline',
     description:
       'Custom action triggering pipeline to provision an ACE application',
     schema: {
       input: z.object({
-        clusterName: z
-          .string()
-          .describe('ACE application to be deployed here'),
-        gitRepo: z
-          .string()
-          .describe('Repository housing ACE application'),
-        barfile: z.
-        string().
-        describe('Name of BAR File')
+        clusterName: z.string().describe('ACE application to be deployed here'),
+        gitRepo: z.string().describe('Repository housing ACE application'),
+        barfile: z.string().describe('Name of BAR File'),
       }) as z.ZodType,
     },
 
@@ -32,7 +30,7 @@ export const triggerACEDeployPipelineAction = () => {
         const data = {
           clusterName: ctx.input.clusterName,
           gitRepo: ctx.input.gitRepo,
-          barfile: ctx.input.barfile
+          barfile: ctx.input.barfile,
         };
 
         const response = await axios.post(

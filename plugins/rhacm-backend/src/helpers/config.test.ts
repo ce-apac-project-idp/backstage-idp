@@ -90,21 +90,21 @@ describe('getHubClusterFromConfig', () => {
     const result = () => getHubClusterFromConfig(config);
 
     expect(result).toThrow(
-      "Hub cluster must be specified in config at 'rhacm.hub'",
+      "A cluster with type 'hub' must be defined",
     );
   });
 });
 
 describe('getHubClusterName', () => {
-  it('should get the hub cluster name from config', () => {
+  it('Test loading rhacm enabled from config', () => {
     const config = new ConfigReader({
       rhacm: {
-        hub: 'cluster2',
+        enabled: 'true',
       },
     });
 
-    const result = config.getString('rhacm.hub');
+    const result = config.getString('rhacm.enabled');
 
-    expect(result).toBe('cluster2');
+    expect(result).toBe('true');
   });
 });

@@ -27,7 +27,7 @@ import {
   hubApiClient,
 } from '../helpers/kubernetes';
 import { parseManagedCluster } from '../helpers/parser';
-import { getHubClusterName } from '../helpers/config';
+import { getHubClusterFromConfig } from '../helpers/config';
 
 export interface RouterOptions {
   logger: Logger;
@@ -40,7 +40,7 @@ export async function createRouter(
   const { logger } = options;
   const { config } = options;
 
-  const hubClusterName = getHubClusterName(config);
+  const hubClusterName = getHubClusterFromConfig(config)?.getString("name");
   const api = hubApiClient(config, logger);
 
   const router = Router();

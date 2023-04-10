@@ -58,22 +58,24 @@ kubernetes:
     - type: 'config'
       clusters:
         - url: ${KUBE_API_ENDPOINT}
+          type: 'hub'
           name: ${KUBE_CLUSTER_NAME}
           authProvider: 'serviceAccount'
           skipTLSVerify: true
           serviceAccountToken: ${KUBE_SERVICE_ACCOUNT_TOKEN}
           dashboardUrl: https://console-openshift-console.${OPENSHIFT_BASE_DOMAIN}
           dashboardApp: openshift
+          customResources:
+            - group: 'cluster.open-cluster-management.io'
+              apiVersion: 'v1'
+              plural: 'managedclusters'
   customResources:
     - group: 'route.openshift.io'
       apiVersion: 'v1'
       plural: 'routes'
-    - group: 'cluster.open-cluster-management.io'
-      apiVersion: 'v1'
-      plural: 'managedclusters'
 
 rhacm:
-  hub: ${RHACM_HUB_CLUSTER} 
+  enabled: ${RHACM_ENABLED}
   clusterKind: ${RHACM_CLUSTER_KIND}
   clusterValue: ${RHACM_CLUSTER_VALUE}
 

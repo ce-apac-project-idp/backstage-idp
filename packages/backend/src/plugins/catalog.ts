@@ -1,4 +1,5 @@
 import { Entity, ResourceEntity } from '@backstage/catalog-model';
+import { Config } from '@backstage/config';
 import {
   CatalogProcessor,
   CatalogProcessorCache,
@@ -11,6 +12,12 @@ import { ManagedClusterProvider } from '@internal/backstage-plugin-rhacm-backend
 import { Router } from 'express';
 import { PluginEnvironment } from '../types';
 import { isInSystemRule } from './permissionRules';
+
+const RHACM_ENABLED = 'rhacm.enabled';
+
+function isRHACMEnabled(config: Config): String {
+  return config.getString(RHACM_ENABLED);
+}
 
 class OpenshiftResourceProcessor implements CatalogProcessor {
   getProcessorName(): string {
@@ -41,18 +48,27 @@ class OpenshiftResourceProcessor implements CatalogProcessor {
   }
 }
 
+
 export default async function createPlugin(
   env: PluginEnvironment,
 ): Promise<Router> {
   const builder = await CatalogBuilder.create(env);
-  const rhacm = ManagedClusterProvider.fromConfig(env.config, {
-    logger: env.logger,
-  });
+
+
+  // RHACM Plugin should only be conditionally enabled. This can be provided as a ConfigMap
+  // and read via the Config API.
+  if (isRHACMEnabled(env.config) === "true") {
+    console.log("RHACM Plugin Enabled...")
+    const rhacm = ManagedClusterProvider.fromConfig(env.config, {
+      logger: env.logger,
+    });
+    builder.addEntityProvider(rhacm);
+    builder.addProcessor(new OpenshiftResourceProcessor());
+    builder.addPermissionRules(isInSystemRule);
+  } 
 
   builder.addProcessor(new ScaffolderEntitiesProcessor());
-  builder.addEntityProvider(rhacm);
-  builder.addProcessor(new OpenshiftResourceProcessor());
-  builder.addPermissionRules(isInSystemRule);
+
 
   const { processingEngine, router } = await builder.build();
   await processingEngine.start();
